@@ -3,6 +3,7 @@ import axios from "axios";
 import Image from "next/image";
 
 interface Asosiasi {
+  id: string;
   namalengkap_asosiasi: string;
   namasingkat_asosiasi: string;
   alamat_asosiasi: string;
@@ -18,6 +19,19 @@ interface Asosiasi {
   image: string;
 }
 
+async function deleteMember(id: string) {
+  try {
+    const res = await fetch(`http://localhost:8000/api/asosiasi/${id}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
+    }
+    console.log("Member deleted successfully");
+  } catch (error) {
+    console.error("Error deleting member:", error);
+  }
+}
 const TableSeven = () => {
   const [data, setData] = useState<Asosiasi[]>([]);
 
@@ -32,6 +46,12 @@ const TableSeven = () => {
       console.error("Error fetching data:", error);
       setData([]);
     }
+  };
+
+  const handleDelete = async (id: string) => {
+    await deleteMember(id);
+    // Refresh data after deletion
+    fetchData();
   };
 
   useEffect(() => {
@@ -182,7 +202,10 @@ const TableSeven = () => {
                         />
                       </svg>
                     </button>
-                    <button className="hover:text-primary">
+                    <button
+                      className="hover:text-primary"
+                      onClick={() => handleDelete(items.id)}
+                    >
                       <svg
                         className="fill-current"
                         width="18"

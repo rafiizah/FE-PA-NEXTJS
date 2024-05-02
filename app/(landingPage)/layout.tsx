@@ -31,7 +31,7 @@ export default function RootLayout({
             <div>
               <HeaderLanding />
               <main>{children}</main>
-              <FooterLanding />
+              {/* <FooterLanding /> */}
             </div>
           )}
         </div>

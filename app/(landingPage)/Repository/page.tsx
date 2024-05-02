@@ -1,7 +1,7 @@
 import React from "react";
-import Tablefive from "@/components/Tables/TableFive";
+import TabsRepo from "@/components/Tabs/TabsRepo";
 const page = () => {
-  return <Tablefive />;
+  return <TabsRepo />;
 };
 
 export default page;

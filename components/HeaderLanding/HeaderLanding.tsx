@@ -1,9 +1,21 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import DropdownUser from "../Header/DropdownUser";
+import Login from "@/components/Auth/Login";
+
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+} from "@nextui-org/react";
+
 const Headeranding = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <header className="fixed top-0 w-full text-gray-600 body-font shadow-3  transition-all ">
       <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
@@ -32,9 +44,22 @@ const Headeranding = () => {
             </a>
           </ul>
         </nav>
-        <button className="font-medium tracking-wide py-2 px-5 sm:px-8 border border-secondary text-secondary bg-white outline-none rounded-l-full rounded-r-full capitalize hover:bg-secondary hover:text-white transition-all ">
-          <a href="/login"> Login</a>
+        <button
+          onClick={onOpen}
+          className="font-medium tracking-wide py-2 px-5 sm:px-8 border border-meta-10 text-meta-10 bg-white outline-none rounded-l-full rounded-r-full capitalize hover:bg-meta-10 hover:text-white transition-all "
+        >
+          Login
         </button>
+        <Modal
+          isOpen={isOpen}
+          onOpenChange={onClose}
+          placement="top-center"
+          size={"4xl"}
+        >
+          <ModalContent>
+            <Login />
+          </ModalContent>
+        </Modal>
       </div>
     </header>
   );

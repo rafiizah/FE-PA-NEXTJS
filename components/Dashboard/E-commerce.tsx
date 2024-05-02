@@ -23,11 +23,28 @@ const ECommerce: React.FC<{
   asosiasi: string | null;
   users: string | null;
 }> = ({ umkm, asosiasi, users }) => {
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/pemilik");
+      const umkmData: Umkm[] = response.data.umkm;
+
+      console.log("Data Umkm:", umkmData); // Tambahkan log untuk memeriksa struktur data
+      setData(umkmData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setData([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []); // Call fetchData when the component mounts
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats
           title="Total UMKM"
+          updateTotalUMKM={fetchData}
           umkm={umkm ? umkm : "Data tidak tersedia"}
           Children={undefined}
         />

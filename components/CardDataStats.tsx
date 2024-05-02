@@ -1,13 +1,15 @@
-import React, { ReactNode, useState, useEffect, Children } from "react";
+import React, { ReactNode, useState, useEffect } from "react";
 import Image from "next/image";
 
 interface CardDataStatsProps {
   title: string;
-  umkm: string;
-  Children: ReactNode;
+  updateTotalUMKM: () => void; // Fungsi untuk memperbarui total UMKM
 }
 
-const CardDataStats: React.FC<CardDataStatsProps> = ({ title }) => {
+const CardDataStats: React.FC<CardDataStatsProps> = ({
+  title,
+  updateTotalUMKM,
+}) => {
   const [totalUMKM, setTotalUMKM] = useState<string>("Loading...");
 
   useEffect(() => {
@@ -19,7 +21,7 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({ title }) => {
         console.error("Error:", error);
         setTotalUMKM("Error");
       });
-  }, []);
+  }, [updateTotalUMKM]); // Menjalankan efek setiap kali updateTotalUMKM berubah
 
   return (
     <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">

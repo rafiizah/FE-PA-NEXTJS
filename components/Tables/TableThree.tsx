@@ -21,6 +21,20 @@ interface Umkm {
   legalitas_usaha: string;
 }
 
+async function deleteMember(id: string) {
+  try {
+    const res = await fetch(`http://localhost:8000/api/pemilik/${id}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
+    }
+    console.log("Member deleted successfully");
+  } catch (error) {
+    console.error("Error deleting member:", error);
+  }
+}
+
 const TableThree = () => {
   const [data, setData] = useState<Umkm[]>([]);
   const cors = require("cors");
@@ -44,22 +58,10 @@ const TableThree = () => {
     }
   };
 
-  const deleteData = async (id: string) => {
-    let config = {
-      method: "delete",
-      maxBodyLength: Infinity,
-      url: `http://localhost:8000/api/pemilik/${id}`,
-      headers: {},
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const handleDelete = async (id: string) => {
+    await deleteMember(id);
+    // Refresh data after deletion
+    fetchData();
   };
 
   useEffect(() => {
@@ -230,7 +232,7 @@ const TableThree = () => {
                     </button>
                     <button
                       className="hover:text-primary"
-                      onClick={() => deleteData(item.id)}
+                      onClick={() => handleDelete(item.id)}
                     >
                       <svg
                         className="fill-current"
