@@ -64,7 +64,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     >
       {/* <!-- SIDEBAR HEADER --> */}
       <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
-        <Link href="/">
+        <Link href="/admin">
           <Image
             width={176}
             height={32}
@@ -117,7 +117,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   return (
                     <React.Fragment>
                       <Link
-                        href="/"
+                        href="/admin"
                         className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                           pathname.includes("dashboard") &&
                           "bg-graydark dark:bg-meta-4"
@@ -243,24 +243,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                           <li>
                             <Link
-                              href="/forms/form-umkm"
-                              className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
-                                pathname === "/forms/form-layout" &&
-                                "text-white"
-                              }`}
-                            >
-                              Form UMKM
-                            </Link>
-                          </li>
-
-                          <li>
-                            <Link
-                              href="admin/forms/form-asosiasi"
+                              href="admin/forms/form-event"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
                                 pathname === "/auth/signup" && "text-white"
                               }`}
                             >
-                              Form Asosiasi
+                              Form Event
                             </Link>
                           </li>
                         </ul>
@@ -275,7 +263,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Tables --> */}
               <li>
                 <Link
-                  href="/tables"
+                  href="/admin/tables"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes("tables") && "bg-graydark dark:bg-meta-4"
                   }`}

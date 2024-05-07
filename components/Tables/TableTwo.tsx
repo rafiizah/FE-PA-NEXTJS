@@ -1,199 +1,222 @@
-import { useEffect, useState } from "react";
+"use client";
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import Image from "next/image";
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  Pagination,
+  Input,
+  Tooltip,
+} from "@nextui-org/react";
+import { SearchIcon } from "../Icon/SearchIcon";
+import { DeleteIcon } from "../Icon/DeleteIcon";
 
-interface Umkm {
-  nama_pemilik: string;
-  nomor_pemilik: string;
-  alamat_pemilik: string;
-  nama_usaha: string;
-  alamat_usaha: string;
-  domisili_usaha: string;
-  kodePos_usaha: string;
-  email_usaha: string;
-  tahunBerdiri_usaha: string;
-  jenisbadan_usaha: string;
-  kategori_usaha: string;
+interface Asosiasi {
+  id: string;
+  namalengkap_asosiasi: string;
+  namasingkat_asosiasi: string;
+  alamat_asosiasi: string;
+  domisili_asosiasi: string;
+  email_asosiasi: string;
+  nomor_wa_asosiasi: string;
+  website_asosiasi: string;
+  nama_pimpinan_asosiasi: string;
+  tahun_berdiri_asosiasi: string;
+  jenis_bidang_asosiasi: string;
+  jumlah_anggota_umkm: string;
+  legalitas_asosiasi: string;
   image: string;
-  deskripsi_usaha: string;
-  legalitas_usaha: string;
 }
 
-function TableTwo() {
-  const [data, setData] = useState<Umkm[]>([]);
+async function deleteMember(id: string) {
+  try {
+    const res = await fetch(`http://localhost:8000/api/asosiasi/${id}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
+    }
+    console.log("Member deleted successfully");
+  } catch (error) {
+    console.error("Error deleting member:", error);
+  }
+}
 
+export default function TableTwo() {
+  const [filterValue, setFilterValue] = useState("");
+  const [data, setData] = useState<Asosiasi[]>([]);
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 5;
+
+  useEffect(() => {
+    fetchData();
+  }, []);
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/pemilik");
-      const umkmData: Umkm[] = response.data.umkm;
+      const response = await axios.get("http://localhost:8000/api/asosiasi");
+      const asosiasiData: Asosiasi[] = response.data.asosiasi;
 
-      console.log("Data Umkm:", umkmData); // Tambahkan log untuk memeriksa struktur data
-      setData(umkmData);
+      console.log("Data Umkm:", asosiasiData); // Tambahkan log untuk memeriksa struktur data
+      setData(asosiasiData);
     } catch (error) {
       console.error("Error fetching data:", error);
       setData([]);
     }
   };
 
+  const handleDelete = async (id: string) => {
+    await deleteMember(id);
+    // Refresh data after deletion
+    fetchData();
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
+
+  const onSearchChange = (value: string) => {
+    setFilterValue(value);
+  };
+
+  const onClear = () => {
+    setFilterValue("");
+  };
+
+  const filteredItems = useMemo(() => {
+    let filteredData = [...data];
+
+    if (filterValue) {
+      filteredData = filteredData.filter(
+        (item) =>
+          item.namalengkap_asosiasi
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          item.namasingkat_asosiasi
+            .toLowerCase()
+            .includes(filterValue.toLowerCase())
+      );
+    }
+
+    return filteredData;
+  }, [data, filterValue]);
+
+  const paginatedData = useMemo(() => {
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+
+    return filteredItems.slice(start, end);
+  }, [filteredItems, page]);
+
+  const totalPages = Math.ceil(filteredItems.length / rowsPerPage);
+
   return (
-    <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-      <div className="py-6 px-4 md:px-6 xl:px-7.5">
-        <h4 className="text-xl font-semibold text-black dark:text-white">
-          UMKM
-        </h4>
-      </div>
-
-      {/* <div className="flex flex-col overflow-auto hover:overflow-scroll"> */}
-      {/* <div className="sm:-mx-8 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8"> */}
-      <div className="overflow-x-scroll">
-        <table className="min-w-full text-center text-sm font-light">
-          <thead className="border-b font-medium text-black dark:text-white dark:border-neutral-500">
-            <tr>
-              <th scope="col" className="text-sm px-10 py-4">
-                No
-              </th>
-              <th scope="col" className="text-sm px-10 py-4">
-                Nama Pemilik
-              </th>
-              <th scope="col" className="text-sm px-10 py-4">
-                Nomor Pemilik
-              </th>
-              <th scope="col" className="text-sm px-10 py-4">
-                Alamat Pemilik
-              </th>
-              <th scope="col" className="text-sm px-10 py-4">
-                Nama Usaha
-              </th>
-              <th scope="col" className="text-sm px-10 py-4">
-                Alamat Usaha
-              </th>
-              <th scope="col" className="text-sm px-10 py-4">
-                Domisili Usaha
-              </th>
-              <th scope="col" className="text-sm px-10 py-4">
-                Kode Pos Usaha
-              </th>
-              <th scope="col" className="text-sm px-10 py-4">
-                Email Usaha
-              </th>
-              <th scope="col" className="text-sm px-10 py-4">
-                Tahun Berdiri Usaha
-              </th>
-              <th scope="col" className="text-sm px-10 py-4">
-                Jenis Badan Usaha
-              </th>
-              <th scope="col" className="text-sm px-10 py-4">
-                Kategori Usaha
-              </th>
-              <th scope="col" className="text-sm px-10 py-4">
-                Gambar
-              </th>
-              <th scope="col" className="text-sm px-10 py-4">
-                Deskripsi Usaha
-              </th>
-              <th scope="col" className="text-sm px-10 py-4">
-                Legalitas Usaha
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {data.map((item, index) => (
-              <tr
-                className="text-black border-b dark:border-neutral-500"
-                key={index}
-              >
-                <td className="whitespace-nowrap px-8 py-4">
-                  <p className="text-black dark:text-white font-extrabold">
-                    {index + 1}{" "}
-                  </p>
-                </td>
-                <td className="whitespace-nowrap px-8 py-4">
-                  <p className="text-black dark:text-white font-normal">
-                    {item.nama_pemilik}
-                  </p>
-                </td>
-                <td className="whitespace-nowrap px-8 py-4">
-                  <p className="text-black dark:text-white font-normal">
-                    {item.nomor_pemilik}
-                  </p>
-                </td>
-                <td className="whitespace-nowrap px-8 py-4">
-                  <p className="text-black dark:text-white font-normal">
-                    {item.alamat_pemilik}
-                  </p>
-                </td>
-
-                <td className="whitespace-nowrap px-8 py-4">
-                  <p className="text-black dark:text-white font-normal">
-                    {item.nama_usaha}
-                  </p>
-                </td>
-                <td className="whitespace-nowrap px-7 py-4">
-                  <p className="text-black dark:text-white font-normal">
-                    {item.alamat_usaha}
-                  </p>
-                </td>
-                <td className="whitespace-nowrap px-8 py-4">
-                  <p className="text-black dark:text-white font-normal">
-                    {item.domisili_usaha}
-                  </p>
-                </td>
-                <td className="whitespace-nowrap px-8 py-4">
-                  <p className="text-black dark:text-white font-normal">
-                    {item.kodePos_usaha}
-                  </p>
-                </td>
-                <td className="whitespace-nowrap px-8 py-4">
-                  <p className="text-black dark:text-white font-normal">
-                    {item.email_usaha}
-                  </p>
-                </td>
-                <td className="whitespace-nowrap px-8 py-4">
-                  <p className="text-black dark:text-white font-normal">
-                    {item.tahunBerdiri_usaha}
-                  </p>
-                </td>
-                <td className="whitespace-nowrap px-8 py-4">
-                  <p className="text-black dark:text-white font-normal">
-                    {item.jenisbadan_usaha}
-                  </p>
-                </td>
-                <td className="whitespace-nowrap px-8 py-4">
-                  <p className="text-black dark:text-white font-normal">
-                    {item.kategori_usaha}
-                  </p>
-                </td>
-                <td className="whitespace-nowrap px-8 py-4">
-                  <Image
-                    src={`http://localhost:8000/${item.image}`}
-                    className="rounded-3"
-                    alt={`Gambar ${item.image}`}
-                    width={100}
-                    height={100}
-                  />
-                </td>
-                <td className="whitespace-nowrap px-8 py-4">
-                  <p className="text-black dark:text-white font-normal">
-                    {item.deskripsi_usaha}
-                  </p>
-                </td>
-                <td className="whitespace-nowrap px-8 py-4">
-                  <p className="text-black dark:text-white font-normal">
-                    {item.legalitas_usaha}
-                  </p>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <>
+      <Input
+        isClearable
+        className="w-full sm:max-w-[44%] mb-3"
+        placeholder="Search by name..."
+        startContent={<SearchIcon />}
+        value={filterValue}
+        onClear={onClear}
+        onValueChange={onSearchChange}
+      />
+      <Table
+        topContent={<b>Asosiasi</b>}
+        className="justify-center"
+        aria-label="Example table with client side pagination"
+        bottomContent={
+          <div className="flex w-full justify-center">
+            <Pagination
+              isCompact
+              showControls
+              showShadow
+              color="primary"
+              page={page}
+              total={totalPages}
+              onChange={(page) => setPage(page)}
+            />
+          </div>
+        }
+        classNames={{
+          wrapper: "min-h-[222px]",
+        }}
+      >
+        <TableHeader>
+          <TableColumn key="namalengkap_asosiasi">
+            Nama lengkap Asosiasi
+          </TableColumn>
+          <TableColumn key="namasingkat_asosiasi">
+            Nama Singkat Asosiasi
+          </TableColumn>
+          <TableColumn key="alamat_asosiasi">Alamat Asosiasi</TableColumn>
+          <TableColumn key="domisili_asosiasi">Domisili Asosiasi</TableColumn>
+          <TableColumn key="email_asosiasi">Email Asosiasi</TableColumn>
+          <TableColumn key="nomor_wa_asosiasi">
+            Nomor WA Aktif Asosiasi
+          </TableColumn>
+          <TableColumn key="website_asosiasi">Website Asosiasi</TableColumn>
+          <TableColumn key="nama_pimpinan_asosiasi">
+            Nama Pimpinan Asosiasi
+          </TableColumn>
+          <TableColumn key="tahun_berdiri_asosiasi">
+            Tahun Berdiri Asosiasi
+          </TableColumn>
+          <TableColumn key="jenis_bidang_asosiasi">
+            Jenis Bidang Asosiasi
+          </TableColumn>
+          <TableColumn key="jumlah_anggota_umkm">
+            Jumlah Anggota UMKM
+          </TableColumn>
+          <TableColumn key="legalitas_asosiasi">Legalitas Asosiasi</TableColumn>
+          <TableColumn key="image">Gambar Logo Asosiasi</TableColumn>
+          <TableColumn key="action">Action</TableColumn>
+        </TableHeader>
+        <TableBody items={paginatedData}>
+          {(item) => (
+            <TableRow key={item.id}>
+              <TableCell>{item.namalengkap_asosiasi}</TableCell>
+              <TableCell>{item.namasingkat_asosiasi}</TableCell>
+              <TableCell>{item.alamat_asosiasi}</TableCell>
+              <TableCell>{item.domisili_asosiasi}</TableCell>
+              <TableCell>{item.email_asosiasi}</TableCell>
+              <TableCell>{item.nomor_wa_asosiasi}</TableCell>
+              <TableCell>{item.website_asosiasi}</TableCell>
+              <TableCell>{item.nama_pimpinan_asosiasi}</TableCell>
+              <TableCell>{item.tahun_berdiri_asosiasi}</TableCell>
+              <TableCell>{item.jenis_bidang_asosiasi}</TableCell>
+              <TableCell>{item.jumlah_anggota_umkm}</TableCell>
+              <TableCell>{item.legalitas_asosiasi}</TableCell>
+              <TableCell>
+                {" "}
+                <Image
+                  src={`http://localhost:8000/${item.image}`}
+                  className="rounded-3"
+                  alt={`Gambar ${item.image}`}
+                  width={100}
+                  height={100}
+                />
+              </TableCell>
+              <TableCell>
+                <div className="relative flex items-center gap-2">
+                  <Tooltip color="danger" content="Delete user">
+                    <span
+                      className="text-lg text-danger cursor-pointer active:opacity-50"
+                      onClick={() => handleDelete(item.id)}
+                    >
+                      <DeleteIcon />
+                    </span>
+                  </Tooltip>
+                </div>
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </>
   );
 }
-
-export default TableTwo;

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
 import Image from "next/image";
 import router from "next/router";
+import { Pagination } from "@nextui-org/react";
 
 interface Umkm {
   id: string;
@@ -38,35 +39,38 @@ async function deleteMember(id: string) {
 const TableThree = () => {
   const [data, setData] = useState<Umkm[]>([]);
   const cors = require("cors");
-
-  const [isClient, setIsClient] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Jumlah item per halaman
 
   useEffect(() => {
-    setIsClient(true); // Set isClient to true when component mounts
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/pemilik");
+        const umkmData: Umkm[] = response.data.umkm;
+        setData(umkmData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setData([]);
+      }
+    };
+
+    fetchData();
   }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/api/pemilik");
-      const umkmData: Umkm[] = response.data.umkm;
-
-      console.log("Data Umkm:", umkmData); // Tambahkan log untuk memeriksa struktur data
-      setData(umkmData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setData([]);
-    }
-  };
 
   const handleDelete = async (id: string) => {
     await deleteMember(id);
     // Refresh data after deletion
-    fetchData();
+    const newData = data.filter((item: any) => item.id !== id);
+    setData(newData);
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // Filter data based on current page
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const visibleData = data.slice(startIndex, endIndex);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(data.length / itemsPerPage);
 
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -75,49 +79,49 @@ const TableThree = () => {
         <table className="w-full text-center">
           <thead>
             <tr className="bg-gray-2 dark:bg-meta-4 text-center">
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[75px] py-4 px-4 font-medium text-black dark:text-white">
                 No
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[75px] py-4 px-4 font-medium text-black dark:text-white">
                 Nama Pemilik
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[75px] py-4 px-4 font-medium text-black dark:text-white">
                 Nomor Pemilik
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[75px] py-4 px-4 font-medium text-black dark:text-white">
                 Alamat Pemilik
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[75px] py-4 px-4 font-medium text-black dark:text-white">
                 Nama Usaha
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[75px] py-4 px-4 font-medium text-black dark:text-white">
                 Alamat Usaha
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[75px] py-4 px-4 font-medium text-black dark:text-white">
                 Domisili Usaha
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[75px] py-4 px-4 font-medium text-black dark:text-white">
                 Kode Pos Usaha
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[75px] py-4 px-4 font-medium text-black dark:text-white">
                 Email Usaha
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[75px] py-4 px-4 font-medium text-black dark:text-white">
                 Tahun Berdiri Usaha
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[75px] py-4 px-4 font-medium text-black dark:text-white">
                 Jenis Badan Usaha
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[75px] py-4 px-4 font-medium text-black dark:text-white">
                 Kategori Usaha
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[75px] py-4 px-4 font-medium text-black dark:text-white">
                 Deskripsi Usaha
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[75px] py-4 px-4 font-medium text-black dark:text-white">
                 Legalitas Usaha
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[75px] py-4 px-4 font-medium text-black dark:text-white">
                 Foto Produk UMKM
               </th>
               <th className="py-4 px-4 font-medium text-black dark:text-white">
@@ -267,6 +271,14 @@ const TableThree = () => {
           </tbody>
         </table>
       </div>
+      <Pagination
+        loop
+        showControls
+        color="success"
+        total={totalPages}
+        initialPage={currentPage}
+        onChange={(page) => setCurrentPage(page)}
+      />
     </div>
   );
 };

@@ -15,11 +15,22 @@ import { SearchIcon } from "../Icon/SearchIcon";
 interface Umkm {
   id: string;
   nama_pemilik: string;
+  nomor_pemilik: string;
+  alamat_pemilik: string;
   nama_usaha: string;
+  alamat_usaha: string;
+  domisili_usaha: string;
+  kodePos_usaha: string;
   email_usaha: string;
+  tahunBerdiri_usaha: string;
+  jenisbadan_usaha: string;
+  kategori_usaha: string;
+  image: string;
+  deskripsi_usaha: string;
+  legalitas_usaha: string;
 }
 
-export default function App() {
+export default function TableUmkm() {
   const [filterValue, setFilterValue] = useState("");
   const [data, setData] = useState<Umkm[]>([]);
   const [page, setPage] = useState(1);
@@ -107,15 +118,39 @@ export default function App() {
       >
         <TableHeader>
           <TableColumn key="nama_pemilik">Nama Pemilik</TableColumn>
+          <TableColumn key="nomor_pemilik">Nomor Pemilik</TableColumn>
+          <TableColumn key="alamat_pemilik">Alamat Pemilik</TableColumn>
           <TableColumn key="nama_usaha">Nama Usaha</TableColumn>
-          <TableColumn key="email_usaha">Email Usaha</TableColumn>
+          <TableColumn key="alamat_usaha">Alamat Usaha</TableColumn>
+          <TableColumn key="domisili_usaha">Domisili Usaha</TableColumn>
+          <TableColumn key="kodePos_usaha">Kode Pos Usaha</TableColumn>
+          <TableColumn key="Email_usaha">Email Usaha</TableColumn>
+          <TableColumn key="tahunBerdiri_usaha">
+            Tahun Berdiri Usaha
+          </TableColumn>
+          <TableColumn key="jenisbadan_usaha">Jenis Badan Usaha</TableColumn>
+          <TableColumn key="kategori_usaha">Kategori Usaha</TableColumn>
+          <TableColumn key="deskripsi_usaha">Deskripsi Usaha</TableColumn>
+          <TableColumn key="legalitas_usaha">Legalitas Usaha</TableColumn>
+          <TableColumn key="image">Foto Produk Usaha</TableColumn>
         </TableHeader>
         <TableBody items={paginatedData}>
           {(item) => (
             <TableRow key={item.id}>
               <TableCell>{item.nama_pemilik}</TableCell>
+              <TableCell>{item.nomor_pemilik}</TableCell>
+              <TableCell>{item.alamat_pemilik}</TableCell>
               <TableCell>{item.nama_usaha}</TableCell>
+              <TableCell>{item.alamat_usaha}</TableCell>
+              <TableCell>{item.domisili_usaha}</TableCell>
+              <TableCell>{item.kodePos_usaha}</TableCell>
               <TableCell>{item.email_usaha}</TableCell>
+              <TableCell>{item.tahunBerdiri_usaha}</TableCell>
+              <TableCell>{item.jenisbadan_usaha}</TableCell>
+              <TableCell>{item.kategori_usaha}</TableCell>
+              <TableCell>{item.deskripsi_usaha}</TableCell>
+              <TableCell>{item.legalitas_usaha}</TableCell>
+              <TableCell>{item.image}</TableCell>
             </TableRow>
           )}
         </TableBody>

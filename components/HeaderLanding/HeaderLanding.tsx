@@ -36,7 +36,7 @@ const Headeranding = () => {
             <a href="/Repository" className="mr-5 text-lg hover:text-meta-5">
               Repository
             </a>
-            <a href="" className="mr-5 text-lg hover:text-meta-5">
+            <a href="/Events" className="mr-5 text-lg hover:text-meta-5">
               Event
             </a>
             <a href="" className="mr-5 text-lg hover:text-meta-5">

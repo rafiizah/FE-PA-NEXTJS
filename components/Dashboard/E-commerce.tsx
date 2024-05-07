@@ -4,16 +4,18 @@ import ChartOne from "../Charts/ChartOne";
 import ChartThree from "../Charts/ChartThree";
 import ChartTwo from "../Charts/ChartTwo";
 import ChatCard from "../Chat/ChatCard";
-import TableThree from "../Tables/TableThree";
 import CardDataStats from "../CardDataStats";
 import CardDataAsosiasi from "../CardDataAsosiasi";
 import CardDataUser from "../CardDataUser";
-// import Map from "../Maps/TestMap";
+import Breadcrumb from "@/components/Charts/Breadcrumbs/Breadcrumb";
 
 // without this the component renders on server and throws an error
 import dynamic from "next/dynamic";
 import ChartFour from "../Charts/ChartFour";
-import TableSeven from "../Tables/TableSeven";
+import TableTwo from "../Tables/TableTwo";
+import TableUmkm from "../Tables/TableUmkm";
+import TableOne from "../Tables/TableOne";
+import CardDataEvent from "../CardDataEvent";
 const MapOne = dynamic(() => import("../Maps/MapOne"), {
   ssr: false,
 });
@@ -22,29 +24,14 @@ const ECommerce: React.FC<{
   umkm: string | null;
   asosiasi: string | null;
   users: string | null;
-}> = ({ umkm, asosiasi, users }) => {
-  const fetchData = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/api/pemilik");
-      const umkmData: Umkm[] = response.data.umkm;
-
-      console.log("Data Umkm:", umkmData); // Tambahkan log untuk memeriksa struktur data
-      setData(umkmData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setData([]);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []); // Call fetchData when the component mounts
+  event: string | null;
+}> = ({ umkm, asosiasi, users, event }) => {
   return (
     <>
+      <Breadcrumb pageName="Dashboard" />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats
           title="Total UMKM"
-          updateTotalUMKM={fetchData}
           umkm={umkm ? umkm : "Data tidak tersedia"}
           Children={undefined}
         />
@@ -60,17 +47,22 @@ const ECommerce: React.FC<{
           users={users ? users : "Data tidak tersedia"}
           Children={undefined}
         />
+        <CardDataEvent
+          title="Total Event"
+          event={event ? event : "Data tidak tersedia"}
+          Children={undefined}
+        />
       </div>
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         {/* <ChartFour /> */}
         {/* <ChartThree />
         <ChartTwo /> */}
-        <div className="col-span-12 xl:col-span-12">
-          <TableThree />
+        <div className="col-span-12 xl:col-span-12 mb-7">
+          <TableOne />
         </div>
         <div className="col-span-12 xl:col-span-12">
-          <TableSeven />
+          <TableTwo />
         </div>
       </div>
     </>

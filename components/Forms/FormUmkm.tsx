@@ -2,6 +2,7 @@
 import { Metadata } from "next";
 import { useState, useEffect, ChangeEvent, ChangeEventHandler } from "react";
 import { useRouter } from "next/navigation";
+import { Input } from "@nextui-org/react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import FormData from "form-data";
@@ -35,6 +36,7 @@ const FormUmkm: React.FC<FormUmkmProps> = ({ id }) => {
   const [legalitas_usaha, setLegalitas_usaha] = useState("");
   const [selectedJenisBadanUsaha, setSelectedJenisBadanUsaha] =
     useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [isCheckedOne, setIsCheckedOne] = useState<boolean>(false);
   const [isCheckedTwo, setIsCheckedTwo] = useState<boolean>(false);
@@ -73,6 +75,8 @@ const FormUmkm: React.FC<FormUmkmProps> = ({ id }) => {
   //method "storePost"
   const storePost = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
+
+    setIsLoading(true);
 
     // Membuat objek FormData
     const formData = new FormData();
@@ -130,12 +134,13 @@ const FormUmkm: React.FC<FormUmkmProps> = ({ id }) => {
       .then((response: any) => {
         console.log(JSON.stringify(response.data));
         console.log(response);
-        router.push(`/dashboardUmkm/${response.data.user.id}`);
+        router.push(`/dashboardUmkm/${response.data.umkm.user_id}`);
       })
       .catch((error: any) => {
         console.log(error);
       });
   };
+
   return (
     <>
       <div className="flex flex-col gap-10">
@@ -493,10 +498,12 @@ const FormUmkm: React.FC<FormUmkmProps> = ({ id }) => {
 
                 <button
                   type="submit"
-                  className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray"
+                  className={`flex w-full justify-center rounded bg-primary p-3 font-medium text-gray  ${
+                    isLoading ? "opacity-50 pointer-events-none" : ""
+                  }`}
                   onClick={storePost}
                 >
-                  Send Message
+                  {isLoading ? "Sending..." : "Send Message"}
                 </button>
               </div>
             </form>

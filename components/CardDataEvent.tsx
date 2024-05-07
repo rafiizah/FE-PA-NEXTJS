@@ -3,21 +3,21 @@ import Image from "next/image";
 
 interface CardDataStatsProps {
   title: string;
-  umkm: string;
+  event: string;
   Children: ReactNode;
 }
 
 const CardDataStats: React.FC<CardDataStatsProps> = ({ title }) => {
-  const [totalUMKM, setTotalUMKM] = useState<string>("Loading...");
+  const [totalEvent, setTotalEvent] = useState<string>("Loading...");
 
   useEffect(() => {
     // Mengambil total UMKM dari API
-    fetch("http://localhost:8000/api/jumlah-umkm")
+    fetch("http://localhost:8000/api/jumlah-event")
       .then((response) => response.json())
-      .then((data) => setTotalUMKM(data.jumlah_umkm))
+      .then((data) => setTotalEvent(data.jumlah_event))
       .catch((error) => {
         console.error("Error:", error);
-        setTotalUMKM("Error");
+        setTotalEvent("Error");
       });
   }, []);
 
@@ -25,9 +25,7 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({ title }) => {
     <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
         <Image
-          src={
-            "/images/store-business-marketplace-shop-sale-buy-marketing-2-svgrepo-com.svg"
-          }
+          src={"/images/calendar-svgrepo-com.svg"}
           alt="Logo"
           width={29}
           height={29}
@@ -37,7 +35,7 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({ title }) => {
       <div className="mt-4 flex items-end justify-between">
         <div>
           <h4 className="text-title-md font-bold text-black dark:text-white">
-            {totalUMKM}
+            {totalEvent}
           </h4>
           <span className="text-sm font-medium">{title}</span>
         </div>

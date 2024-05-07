@@ -1,123 +1,214 @@
-import { BRAND } from "@/types/brand";
+"use client";
+import React, { useState, useEffect, useMemo } from "react";
+import axios from "axios";
 import Image from "next/image";
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  Pagination,
+  Input,
+  Tooltip,
+} from "@nextui-org/react";
+import { SearchIcon } from "../Icon/SearchIcon";
+import { DeleteIcon } from "../Icon/DeleteIcon";
 
-const brandData: BRAND[] = [
-  {
-    logo: "/images/brand/brand-01.svg",
-    name: "Google",
-    visitors: 3.5,
-    revenues: "5,768",
-    sales: 590,
-    conversion: 4.8,
-  },
-  {
-    logo: "/images/brand/brand-02.svg",
-    name: "Twitter",
-    visitors: 2.2,
-    revenues: "4,635",
-    sales: 467,
-    conversion: 4.3,
-  },
-  {
-    logo: "/images/brand/brand-03.svg",
-    name: "Github",
-    visitors: 2.1,
-    revenues: "4,290",
-    sales: 420,
-    conversion: 3.7,
-  },
-  {
-    logo: "/images/brand/brand-04.svg",
-    name: "Vimeo",
-    visitors: 1.5,
-    revenues: "3,580",
-    sales: 389,
-    conversion: 2.5,
-  },
-  {
-    logo: "/images/brand/brand-05.svg",
-    name: "Facebook",
-    visitors: 3.5,
-    revenues: "6,768",
-    sales: 390,
-    conversion: 4.2,
-  },
-];
+interface Umkm {
+  id: string;
+  nama_pemilik: string;
+  nomor_pemilik: string;
+  alamat_pemilik: string;
+  nama_usaha: string;
+  alamat_usaha: string;
+  domisili_usaha: string;
+  kodePos_usaha: string;
+  email_usaha: string;
+  tahunBerdiri_usaha: string;
+  jenisbadan_usaha: string;
+  kategori_usaha: string;
+  image: string;
+  deskripsi_usaha: string;
+  legalitas_usaha: string;
+}
 
-const TableOne = () => {
+async function deleteMember(id: string) {
+  try {
+    const res = await fetch(`http://localhost:8000/api/pemilik/${id}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
+    }
+    console.log("Member deleted successfully");
+  } catch (error) {
+    console.error("Error deleting member:", error);
+  }
+}
+
+export default function TableOne() {
+  const [filterValue, setFilterValue] = useState("");
+  const [data, setData] = useState<Umkm[]>([]);
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 5;
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/pemilik");
+      const umkmData: Umkm[] = response.data.umkm;
+
+      console.log("Data Umkm:", umkmData);
+      setData(umkmData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setData([]);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteMember(id);
+      // Menghapus item yang sesuai dengan id dari state data
+      const newData = data.filter((item) => item.id !== id);
+      // Memperbarui state data dengan data yang sudah dihapus
+      setData(newData);
+    } catch (error) {
+      console.error("Error deleting member:", error);
+    }
+  };
+
+  const onSearchChange = (value: string) => {
+    setFilterValue(value);
+  };
+
+  const onClear = () => {
+    setFilterValue("");
+  };
+
+  const filteredItems = useMemo(() => {
+    let filteredData = [...data];
+
+    if (filterValue) {
+      filteredData = filteredData.filter(
+        (item) =>
+          item.nama_pemilik.toLowerCase().includes(filterValue.toLowerCase()) ||
+          item.nama_usaha.toLowerCase().includes(filterValue.toLowerCase())
+      );
+    }
+
+    return filteredData;
+  }, [data, filterValue]);
+
+  const paginatedData = useMemo(() => {
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+
+    return filteredItems.slice(start, end);
+  }, [filteredItems, page]);
+
+  const totalPages = Math.ceil(filteredItems.length / rowsPerPage);
+
   return (
-    <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-      <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-        Top Channels
-      </h4>
-
-      <div className="flex flex-col">
-        <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-5">
-          <div className="p-2.5 xl:p-5">
-            <h5 className="text-sm font-medium uppercase xsm:text-base">
-              Source
-            </h5>
+    <>
+      <Input
+        isClearable
+        className="w-full sm:max-w-[44%] mb-3"
+        placeholder="Search by name..."
+        startContent={<SearchIcon />}
+        value={filterValue}
+        onClear={onClear}
+        onValueChange={onSearchChange}
+      />
+      <Table
+        topContent={<b>UMKM</b>}
+        className="justify-center"
+        aria-label="Example table with client side pagination"
+        bottomContent={
+          <div className="flex w-full justify-center">
+            <Pagination
+              isCompact
+              showControls
+              showShadow
+              color="primary"
+              page={page}
+              total={totalPages}
+              onChange={(page) => setPage(page)}
+            />
           </div>
-          <div className="p-2.5 text-center xl:p-5">
-            <h5 className="text-sm font-medium uppercase xsm:text-base">
-              Visitors
-            </h5>
-          </div>
-          <div className="p-2.5 text-center xl:p-5">
-            <h5 className="text-sm font-medium uppercase xsm:text-base">
-              Revenues
-            </h5>
-          </div>
-          <div className="hidden p-2.5 text-center sm:block xl:p-5">
-            <h5 className="text-sm font-medium uppercase xsm:text-base">
-              Sales
-            </h5>
-          </div>
-          <div className="hidden p-2.5 text-center sm:block xl:p-5">
-            <h5 className="text-sm font-medium uppercase xsm:text-base">
-              Conversion
-            </h5>
-          </div>
-        </div>
-
-        {brandData.map((brand, key) => (
-          <div
-            className={`grid grid-cols-3 sm:grid-cols-5 ${
-              key === brandData.length - 1
-                ? ""
-                : "border-b border-stroke dark:border-strokedark"
-            }`}
-            key={key}
-          >
-            <div className="flex items-center gap-3 p-2.5 xl:p-5">
-              <div className="flex-shrink-0">
-                <Image src={brand.logo} alt="Brand" width={48} height={48} />
-              </div>
-              <p className="hidden text-black dark:text-white sm:block">
-                {brand.name}
-              </p>
-            </div>
-
-            <div className="flex items-center justify-center p-2.5 xl:p-5">
-              <p className="text-black dark:text-white">{brand.visitors}K</p>
-            </div>
-
-            <div className="flex items-center justify-center p-2.5 xl:p-5">
-              <p className="text-meta-3">${brand.revenues}</p>
-            </div>
-
-            <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-              <p className="text-black dark:text-white">{brand.sales}</p>
-            </div>
-
-            <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-              <p className="text-meta-5">{brand.conversion}%</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+        }
+        classNames={{
+          wrapper: "min-h-[222px]",
+        }}
+      >
+        <TableHeader>
+          <TableColumn align={"center"} key="nama_pemilik">
+            Nama Pemilik
+          </TableColumn>
+          <TableColumn key="nomor_pemilik">Nomor Pemilik</TableColumn>
+          <TableColumn key="alamat_pemilik">Alamat Pemilik</TableColumn>
+          <TableColumn key="nama_usaha">Nama Usaha</TableColumn>
+          <TableColumn key="alamat_usaha">Alamat Usaha</TableColumn>
+          <TableColumn key="domisili_usaha">Domisili Usaha</TableColumn>
+          <TableColumn key="kodePos_usaha">Kode Pos Usaha</TableColumn>
+          <TableColumn key="email_usaha">Email Usaha</TableColumn>
+          <TableColumn key="tahunBerdiri_usaha">
+            Tahun Berdiri Usaha
+          </TableColumn>
+          <TableColumn key="jenisbadan_usaha">Jenis Badan Usaha</TableColumn>
+          <TableColumn key="kategori_usaha">Kategori Usaha</TableColumn>
+          <TableColumn key="deskripsi_usaha">Deskripsi Usaha</TableColumn>
+          <TableColumn key="legalitas_usaha">Legalitas Usaha</TableColumn>
+          <TableColumn key="image">Gambar Produk Usaha</TableColumn>
+          <TableColumn key="action">Action</TableColumn>
+        </TableHeader>
+        <TableBody items={paginatedData}>
+          {(item) => (
+            <TableRow key={item.id}>
+              <TableCell>{item.nama_pemilik}</TableCell>
+              <TableCell>{item.nomor_pemilik}</TableCell>
+              <TableCell>{item.alamat_pemilik}</TableCell>
+              <TableCell>{item.nama_usaha}</TableCell>
+              <TableCell>{item.alamat_usaha}</TableCell>
+              <TableCell>{item.domisili_usaha}</TableCell>
+              <TableCell>{item.kodePos_usaha}</TableCell>
+              <TableCell>{item.email_usaha}</TableCell>
+              <TableCell>{item.tahunBerdiri_usaha}</TableCell>
+              <TableCell>{item.jenisbadan_usaha}</TableCell>
+              <TableCell>{item.kategori_usaha}</TableCell>
+              <TableCell>{item.deskripsi_usaha}</TableCell>
+              <TableCell>{item.legalitas_usaha}</TableCell>
+              <TableCell>
+                {" "}
+                <Image
+                  src={`http://localhost:8000/${item.image}`}
+                  className="rounded-3"
+                  alt={`Gambar ${item.image}`}
+                  width={100}
+                  height={100}
+                />
+              </TableCell>
+              <TableCell>
+                <div className="relative flex items-center gap-2">
+                  <Tooltip color="danger" content="Delete user">
+                    <span
+                      className="text-lg text-danger cursor-pointer active:opacity-50"
+                      onClick={() => handleDelete(item.id)}
+                    >
+                      <DeleteIcon />
+                    </span>
+                  </Tooltip>
+                </div>
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </>
   );
-};
-
-export default TableOne;
+}

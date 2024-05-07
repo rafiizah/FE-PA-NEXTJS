@@ -14,9 +14,7 @@ const TableFive = () => {
               <TableListUmkm />
             </Tab>
             <Tab key="Asosiasi" title="Asosiasi">
-              <Card>
-                <TableListAsosiasi />
-              </Card>
+              <TableListAsosiasi />
             </Tab>
           </Tabs>
         </div>

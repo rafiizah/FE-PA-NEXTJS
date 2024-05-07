@@ -1,5 +1,6 @@
 import Breadcrumb from "@/components/Charts/Breadcrumbs/Breadcrumb";
 import TableTwo from "@/components/Tables/TableTwo";
+import TableOne from "@/components/Tables/TableOne";
 
 import { Metadata } from "next";
 export const metadata: Metadata = {
@@ -11,10 +12,15 @@ export const metadata: Metadata = {
 const TablesPage = () => {
   return (
     <>
-      <Breadcrumb pageName="Table UMKM" />
+      <Breadcrumb pageName="Table" />
 
-      <div className="flex flex-col gap-10">
-        <TableTwo />
+      <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
+        <div className="col-span-12 xl:col-span-12 mb-7">
+          <TableOne />
+        </div>
+        <div className="col-span-12 xl:col-span-12">
+          <TableTwo />
+        </div>
       </div>
     </>
   );

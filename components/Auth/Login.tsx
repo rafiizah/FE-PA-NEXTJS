@@ -12,11 +12,13 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [validation, setValidation] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   //function "loginHanlder"
   const loginHandler = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
+    setIsLoading(true);
     //initialize formData
     const formData = new FormData();
 
@@ -53,14 +55,13 @@ const Login: React.FC = () => {
       });
   };
 
-  //hook useEffect
-  // useEffect(() => {
-  //   //check token
-  //   if (Cookies.get("token")) {
-  //     //redirect page dashboard
-  //     router.push("/");
-  //   }
-  // }, [router]);
+  useEffect(() => {
+    //check token
+    if (Cookies.get("token")) {
+      //redirect page dashboard
+      router.push("/");
+    }
+  }, [router]);
 
   return (
     <>
@@ -295,9 +296,11 @@ const Login: React.FC = () => {
                     type="submit"
                     value="Sign In"
                     onClick={loginHandler}
-                    className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
+                    className={`w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 ${
+                      isLoading ? "opacity-50 pointer-events-none" : ""
+                    }`}
                   >
-                    Login
+                    {isLoading ? "Loading..." : "Login"}
                   </button>
                 </div>
 

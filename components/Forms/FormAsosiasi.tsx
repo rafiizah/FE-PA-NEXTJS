@@ -23,7 +23,7 @@ const FormAsosiasi: React.FC<FormAsosiasiProps> = ({ id }) => {
   const [namalengkap_asosiasi, setNamaLengkap_asosiasi] = useState("");
   const [namasingkat_asosiasi, setNamaSingkat_asosiasi] = useState("");
   const [alamat_asosiasi, setAlamat_asosiasi] = useState("");
-  const [kodepos_asosiasi, setkodePos_asosiasi] = useState("");
+  const [domisili_asosiasi, setDomisili_asosiasi] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [email_asosiasi, setEmail_asosiasi] = useState("");
@@ -35,6 +35,7 @@ const FormAsosiasi: React.FC<FormAsosiasiProps> = ({ id }) => {
   const [jumlah_anggota_umkm, setJumlah_anggota_umkm] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [legalitas_asosiasi, setLegaltas_asosiasi] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [isCheckedSix, setIsCheckedSix] = useState<boolean>(false);
   const [isCheckedSeven, setIsCheckedSeven] = useState<boolean>(false);
@@ -63,6 +64,7 @@ const FormAsosiasi: React.FC<FormAsosiasiProps> = ({ id }) => {
   const storePost = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
+    setIsLoading(true);
     // Membuat objek FormData
     const formData = new FormData();
 
@@ -86,7 +88,7 @@ const FormAsosiasi: React.FC<FormAsosiasiProps> = ({ id }) => {
     formData.append("namalengkap_asosiasi", namalengkap_asosiasi);
     formData.append("namasingkat_asosiasi", namasingkat_asosiasi);
     formData.append("alamat_asosiasi", alamat_asosiasi);
-    formData.append("kodepos_asosiasi", kodepos_asosiasi);
+    formData.append("domisili_asosiasi", domisili_asosiasi);
     formData.append("email", email);
     formData.append("password", password);
     formData.append("email_asosiasi", email_asosiasi);
@@ -118,7 +120,7 @@ const FormAsosiasi: React.FC<FormAsosiasiProps> = ({ id }) => {
       .then((response: any) => {
         console.log(JSON.stringify(response.data));
         console.log(response);
-        router.push(`/dashboardAsosiasi/${response.data.asosiasi.id}`);
+        router.push(`/dashboardAsosiasi/${response.data.asosiasi.user_id}`);
       })
       .catch((error: any) => {
         console.log(error);
@@ -182,13 +184,13 @@ const FormAsosiasi: React.FC<FormAsosiasiProps> = ({ id }) => {
 
                   <div className="w-full xl:w-1/2">
                     <label className="mb-2.5 block text-black dark:text-white">
-                      Kode Pos Asosiasi
+                      Domisili Asosiasi
                     </label>
                     <input
                       type="text"
                       placeholder="Masukkan kode Pos Asosiasi"
-                      value={kodepos_asosiasi}
-                      onChange={(e) => setkodePos_asosiasi(e.target.value)}
+                      value={domisili_asosiasi}
+                      onChange={(e) => setDomisili_asosiasi(e.target.value)}
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
                   </div>
@@ -462,10 +464,12 @@ const FormAsosiasi: React.FC<FormAsosiasiProps> = ({ id }) => {
 
                 <button
                   type="submit"
-                  className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray"
+                  className={`flex w-full justify-center rounded bg-primary p-3 font-medium text-gray  ${
+                    isLoading ? "opacity-50 pointer-events-none" : ""
+                  }`}
                   onClick={storePost}
                 >
-                  Send Message
+                  {isLoading ? "Sending..." : "Send Message"}
                 </button>
               </div>
             </form>

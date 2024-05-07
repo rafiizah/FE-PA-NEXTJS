@@ -8,7 +8,9 @@ import {
   TableRow,
   TableCell,
   Pagination,
+  Input,
 } from "@nextui-org/react";
+import { SearchIcon } from "../Icon/SearchIcon";
 
 interface Asosiasi {
   id: string;
@@ -18,9 +20,10 @@ interface Asosiasi {
 }
 
 export default function App() {
+  const [filterValue, setFilterValue] = useState("");
   const [data, setData] = useState<Asosiasi[]>([]);
   const [page, setPage] = useState(1);
-  const rowsPerPage = 4;
+  const rowsPerPage = 10;
 
   useEffect(() => {
     fetchData();
@@ -31,7 +34,7 @@ export default function App() {
       const response = await axios.get("http://localhost:8000/api/asosiasi");
       const asosiasiData: Asosiasi[] = response.data.asosiasi;
 
-      console.log("Data Umkm:", asosiasiData); // Tambahkan log untuk memeriksa struktur data
+      console.log("Data Asosiasi:", asosiasiData); // Tambahkan log untuk memeriksa struktur data
       setData(asosiasiData);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -39,50 +42,88 @@ export default function App() {
     }
   };
 
-  const pages = Math.ceil(data.length / rowsPerPage);
+  const onSearchChange = (value: string) => {
+    setFilterValue(value);
+  };
 
-  const items = useMemo(() => {
+  const onClear = () => {
+    setFilterValue("");
+  };
+
+  const filteredItems = useMemo(() => {
+    let filteredData = [...data];
+
+    if (filterValue) {
+      filteredData = filteredData.filter(
+        (items) =>
+          items.namalengkap_asosiasi
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          items.alamat_asosiasi
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          items.email_asosiasi.toLowerCase().includes(filterValue.toLowerCase())
+      );
+    }
+
+    return filteredData;
+  }, [data, filterValue]);
+
+  const paginatedData = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    return data.slice(start, end);
-  }, [page, data]);
+    return filteredItems.slice(start, end);
+  }, [filteredItems, page]);
+
+  const totalPages = Math.ceil(filteredItems.length / rowsPerPage);
 
   return (
-    <Table
-      className="justify-center"
-      aria-label="Example table with client side pagination"
-      bottomContent={
-        <div className="flex w-full justify-center">
-          <Pagination
-            isCompact
-            showControls
-            showShadow
-            color="primary"
-            page={page}
-            total={pages}
-            onChange={(page) => setPage(page)}
-          />
-        </div>
-      }
-      classNames={{
-        wrapper: "min-h-[222px]",
-      }}
-    >
-      <TableHeader>
-        <TableColumn key="namalengkap_asosiasi">Nama Asosaisi</TableColumn>
-        <TableColumn key="alamat_asosiasi">Alamat Asosiasi</TableColumn>
-        <TableColumn key="email_asosiasi">Email Asosiasi</TableColumn>
-      </TableHeader>
-      <TableBody items={items}>
-        {(item) => (
-          <TableRow key={item.id}>
-            <TableCell>{item.namalengkap_asosiasi}</TableCell>
-            <TableCell>{item.alamat_asosiasi}</TableCell>
-            <TableCell>{item.email_asosiasi}</TableCell>
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+    <>
+      <Input
+        isClearable
+        className="w-full sm:max-w-[44%] mb-3"
+        placeholder="Search by name..."
+        startContent={<SearchIcon />}
+        value={filterValue}
+        onClear={onClear}
+        onValueChange={onSearchChange}
+      />
+      <Table
+        className="justify-center"
+        aria-label="Example table with client side pagination"
+        bottomContent={
+          <div className="flex w-full justify-center">
+            <Pagination
+              isCompact
+              showControls
+              showShadow
+              color="primary"
+              page={page}
+              total={totalPages}
+              onChange={(page) => setPage(page)}
+            />
+          </div>
+        }
+        classNames={{
+          wrapper: "min-h-[222px]",
+        }}
+      >
+        <TableHeader>
+          <TableColumn key="namalengkap_asosiasi">Nama Asosiasi</TableColumn>
+          <TableColumn key="alamat_asosiasi">Alamat Asosiasi Usaha</TableColumn>
+          <TableColumn key="email_asosiasi">Email Asosiasi</TableColumn>
+        </TableHeader>
+        <TableBody items={paginatedData}>
+          {(item) => (
+            <TableRow key={item.id}>
+              <TableCell>{item.namalengkap_asosiasi}</TableCell>
+              <TableCell>{item.alamat_asosiasi}</TableCell>
+              <TableCell>{item.email_asosiasi}</TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </>
   );
 }
