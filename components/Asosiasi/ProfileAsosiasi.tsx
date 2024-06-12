@@ -1,5 +1,7 @@
+"use client";
 import Image from "next/image";
 import React from "react";
+import { Button, Modal, ModalContent, useDisclosure } from "@nextui-org/react";
 
 interface FormAsosiasiData {
   id: number;
@@ -20,6 +22,7 @@ interface FormAsosiasiData {
 }
 
 const ProfileAsosiasi: React.FC<FormAsosiasiData> = ({
+  id,
   namalengkap_asosiasi,
   namasingkat_asosiasi,
   alamat_asosiasi,
@@ -38,19 +41,24 @@ const ProfileAsosiasi: React.FC<FormAsosiasiData> = ({
     <div className="flex flex-col gap-10">
       <div className="flex flex-col gap-10">
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-          <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+          <div className="flex items-center justify-between border-b border-stroke py-4 px-6.5 dark:border-strokedark">
             <h3 className="font-medium text-black dark:text-white">
               Profile Asosiasi
             </h3>
+            <a href={`/editProfileAsosiasi/${id}`}>
+              <Button color="success" className="text-white">
+                Edit Profile
+              </Button>
+            </a>
           </div>
           <div className="p-6.5">
-            <div className="mx-auto w-50 h-50 rounded-full overflow-hidden">
+            <div className="mx-auto w-32 h-32 rounded-full overflow-hidden mb-6">
               <Image
                 src={`http://localhost:8000/${image}`}
                 // className="rounded-full"
                 alt={`Gambar ${image}`}
-                width={500}
-                height={500}
+                width={128}
+                height={128}
                 objectFit="cover"
               />
             </div>
@@ -82,18 +90,6 @@ const ProfileAsosiasi: React.FC<FormAsosiasiData> = ({
                     : "Alamat Asosiasi Tidak Tersedia"}
                 </label>
               </div>
-
-              <div className="w-full xl:w-1/2">
-                <label className="mb-2.5 block text-black dark:text-white">
-                  Kode Pos Asosiasi :{" "}
-                  {kodepos_asosiasi
-                    ? kodepos_asosiasi
-                    : "Kode Pos Asosiasi Tidak Tersedia"}
-                </label>
-              </div>
-            </div>
-
-            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
               <div className="w-full xl:w-1/2">
                 <label className="mb-2.5 block text-black dark:text-white">
                   Email Asosiasi :{" "}
@@ -102,7 +98,9 @@ const ProfileAsosiasi: React.FC<FormAsosiasiData> = ({
                     : "Email Asosiasi Tidak Tersedia"}
                 </label>
               </div>
+            </div>
 
+            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
               <div className="w-full xl:w-1/2">
                 <label className="mb-2.5 block text-black dark:text-white">
                   Nomor WA Asosiasi :{" "}
@@ -111,9 +109,6 @@ const ProfileAsosiasi: React.FC<FormAsosiasiData> = ({
                     : "Nomor WA Asosiasi Tidak Tersedia"}
                 </label>
               </div>
-            </div>
-
-            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
               <div className="w-full xl:w-1/2">
                 <label className="mb-2.5 block text-black dark:text-white">
                   Website Asosiasi :{" "}
@@ -122,6 +117,9 @@ const ProfileAsosiasi: React.FC<FormAsosiasiData> = ({
                     : "Website Asosiasi Tidak Tersedia"}
                 </label>
               </div>
+            </div>
+
+            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
               <div className="w-full xl:w-1/2">
                 <label className="mb-2.5 block text-black dark:text-white">
                   Nama Pimpinan Asosiasi :{" "}
@@ -130,9 +128,6 @@ const ProfileAsosiasi: React.FC<FormAsosiasiData> = ({
                     : "Nama Pimpinan Asosiasi Tidak Tersedia"}
                 </label>
               </div>
-            </div>
-
-            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
               <div className="w-full xl:w-1/2">
                 <label className="mb-2.5 block text-black dark:text-white">
                   Tahun Berdiri Asosiasi :{" "}
@@ -141,7 +136,9 @@ const ProfileAsosiasi: React.FC<FormAsosiasiData> = ({
                     : "Tahun Berdiri Asosiasi Tidak Tersedia"}
                 </label>
               </div>
+            </div>
 
+            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
               <div className="w-full xl:w-1/2">
                 <label className="mb-2.5 block text-black dark:text-white">
                   Jenis Bidang Asosiasi :{" "}
@@ -150,9 +147,6 @@ const ProfileAsosiasi: React.FC<FormAsosiasiData> = ({
                     : "Jenis Bidang Asosiasi Tidak Tersedia"}
                 </label>
               </div>
-            </div>
-
-            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
               <div className="w-full xl:w-1/2">
                 <label className="mb-2.5 block text-black dark:text-white">
                   Jumalah Anggota UMKM :{" "}
@@ -161,7 +155,9 @@ const ProfileAsosiasi: React.FC<FormAsosiasiData> = ({
                     : "Jumalah Anggota UMKM Tidak Tersedia"}
                 </label>
               </div>
+            </div>
 
+            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
               <div className="w-full xl:w-1/2">
                 <label className="mb-2.5 block text-black dark:text-white">
                   Legalitas Asosiasi :{" "}

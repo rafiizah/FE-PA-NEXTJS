@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Login from "@/components/Auth/Login";
+import Cookies from "js-cookie"; // Ensure js-cookie is imported
 
 import {
   Modal,
@@ -13,13 +14,56 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 
+interface UserRole {
+  name: string;
+}
+
+interface User {
+  id: number;
+  role: UserRole;
+}
+
+interface TokenData {
+  access_token: string;
+  user: User;
+}
+
 const Headeranding = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [token, setToken] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<string>("");
+  const [userId, setUserId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const savedToken = Cookies.get("token");
+    if (savedToken) {
+      setToken(savedToken);
+      const userData: TokenData = JSON.parse(savedToken);
+      setUserRole(userData.user.role.name); // Extract user role name
+      setUserId(userData.user.id); // Extract user ID
+    }
+  }, []);
+
+  // Determine dashboard URL based on user role
+  const getDashboardUrl = () => {
+    if (userRole === "admin") {
+      return `/admin`;
+    } else if (userRole === "umkm") {
+      return `/dashboardUmkm/${userId}`;
+    } else if (userRole === "asosiasi") {
+      return `/dashboardAsosiasi/${userId}`;
+    } else {
+      return "/";
+    }
+  };
 
   return (
-    <header className="fixed top-0 w-full text-gray-600 body-font shadow-3  transition-all ">
+    <header
+      className="fixed top-0 w-full text-gray-600 body-font shadow-3 transition-all"
+      style={{ backgroundColor: "#ffffff" }}
+    >
       <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-        <a className="flex title-font font-medium mr-6  text-gray-900 mb-4 md:mb-0">
+        <a className="flex title-font font-medium mr-6 text-gray-900 mb-4 md:mb-0">
           <Image
             className="flex pl-15"
             src={"/images/logo/new-siumkm.png"}
@@ -39,17 +83,23 @@ const Headeranding = () => {
             <a href="/Events" className="mr-5 text-lg hover:text-meta-5">
               Event
             </a>
-            <a href="" className="mr-5 text-lg hover:text-meta-5">
-              About
-            </a>
           </ul>
         </nav>
-        <button
-          onClick={onOpen}
-          className="font-medium tracking-wide py-2 px-5 sm:px-8 border border-meta-10 text-meta-10 bg-white outline-none rounded-l-full rounded-r-full capitalize hover:bg-meta-10 hover:text-white transition-all "
-        >
-          Login
-        </button>
+        {token ? (
+          <a
+            href={getDashboardUrl()} // Set the href based on the user's role
+            className="font-medium tracking-wide py-2 px-5 sm:px-8 border border-meta-10 text-meta-10 bg-white outline-none rounded-l-full rounded-r-full capitalize hover:bg-meta-10 hover:text-white transition-all"
+          >
+            Dashboard
+          </a>
+        ) : (
+          <button
+            onClick={onOpen}
+            className="font-medium tracking-wide py-2 px-5 sm:px-8 border border-meta-10 text-meta-10 bg-white outline-none rounded-l-full rounded-r-full capitalize hover:bg-meta-10 hover:text-white transition-all"
+          >
+            Login
+          </button>
+        )}
         <Modal
           isOpen={isOpen}
           onOpenChange={onClose}

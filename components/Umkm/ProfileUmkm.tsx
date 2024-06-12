@@ -1,5 +1,8 @@
+"use client";
 import Image from "next/image";
 import React from "react";
+import EditUmkm from "@/components/Forms/EditUmkm";
+import { Button, Modal, ModalContent, useDisclosure } from "@nextui-org/react";
 
 interface getFormUmkm {
   id: number;
@@ -37,24 +40,29 @@ const ProfileUmkm: React.FC<getFormUmkm> = ({
   deskripsi_usaha,
   legalitas_usaha,
 }) => {
-  console.log({ nama_pemilik });
+  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <div className="flex flex-col gap-10">
       <div className="flex flex-col gap-10">
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-          <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+          <div className="flex items-center justify-between border-b border-stroke py-4 px-6.5 dark:border-strokedark">
             <h3 className="font-medium text-black dark:text-white">
               Profile UMKM
             </h3>
+            <a href={`/editProfileUmkm/${id}`}>
+              <Button color="success" className="text-white">
+                Edit Profile
+              </Button>
+            </a>
           </div>
           <div className="p-6.5">
-            <div className="mx-auto w-32 h-32 rounded-full overflow-hidden">
+            <div className="mx-auto w-32 h-32 rounded-full overflow-hidden mb-6">
               <Image
                 src={`http://localhost:8000/${image}`}
-                className="rounded-3"
+                className="w-full h-full object-cover "
                 alt={`Gambar ${image}`}
-                width={100}
-                height={100}
+                width={128} // Ensure this matches the container size for better loading
+                height={128} //
               />
             </div>
             <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">

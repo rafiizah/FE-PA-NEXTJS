@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      <ECommerce umkm={null} asosiasi={null} users={null} />
+      <ECommerce umkm={null} asosiasi={null} users={null} event={null} />
     </>
   );
 }

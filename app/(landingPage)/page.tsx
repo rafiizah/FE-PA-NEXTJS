@@ -18,7 +18,8 @@ export default function landingPage() {
       <div className="container mx-auto p-4">
         <HeroLanding />
         <div className="container mx-auto p-4">
-          <ChartFive />
+          <ChartFour />
+          <ChartFive umkm={null} asosiasi={null} users={null} event={null} />
           {/* <ChartFour /> */}
           <ContentLanding />
           <ContactLanding />

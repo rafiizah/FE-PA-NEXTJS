@@ -3,6 +3,7 @@ import TableTwo from "@/components/Tables/TableTwo";
 import TableOne from "@/components/Tables/TableOne";
 
 import { Metadata } from "next";
+import TableListEvent from "@/components/Tables/TableListEvent";
 export const metadata: Metadata = {
   title: "Table UMKM | SI UMKM",
   description: "This is Tables UMKM",
@@ -20,6 +21,9 @@ const TablesPage = () => {
         </div>
         <div className="col-span-12 xl:col-span-12">
           <TableTwo />
+        </div>
+        <div className="col-span-12 xl:col-span-12">
+          <TableListEvent />
         </div>
       </div>
     </>

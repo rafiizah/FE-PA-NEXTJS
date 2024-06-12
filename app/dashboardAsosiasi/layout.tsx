@@ -3,7 +3,7 @@ import "./globals.css";
 import { useState, useEffect } from "react";
 import Loader from "@/components/common/Loader";
 import Header from "@/components/Header";
-import SidebarUmkm from "@/components/SidebarUmkm/SidebarUmkm";
+import SidebarAsosiasi from "@/components/Sidebar/SidebarAsosiasi";
 
 export default function RootLayout({
   children,
@@ -27,7 +27,7 @@ export default function RootLayout({
           ) : (
             <div className="flex h-screen overflow-hidden">
               {/* <!-- ===== Sidebar Start ===== --> */}
-              <SidebarUmkm
+              <SidebarAsosiasi
                 sidebarOpen={sidebarOpen}
                 setSidebarOpen={setSidebarOpen}
               />

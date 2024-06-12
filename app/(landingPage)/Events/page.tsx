@@ -1,3 +1,4 @@
+"use client";
 import CardEvents from "@/components/Card/CardEvents";
 import React from "react";
 

@@ -4,6 +4,7 @@ import "./data-tables-css.css";
 import "./satoshi.css";
 import { useState, useEffect } from "react";
 import Loader from "@/components/common/Loader";
+import Cookies from "js-cookie";
 
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";

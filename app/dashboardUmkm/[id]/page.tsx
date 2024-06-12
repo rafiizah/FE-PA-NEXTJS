@@ -1,13 +1,13 @@
 import axios from "axios";
 import ProfileUmkm from "@/components/Umkm/ProfileUmkm";
 import React from "react";
+import Cookies from "js-cookie";
 
 export async function generateStaticParams() {
   try {
     const res = await fetch("http://localhost:8000/api/pemilik");
     const data = await res.json();
 
-    // Pastikan bahwa properti yang diharapkan adalah umkms
     if (data && Array.isArray(data.umkms)) {
       return data.umkms.map((umkm: any) => ({
         id: umkm.id.toString(),
@@ -25,7 +25,9 @@ async function getFormUmkm(id: any) {
   try {
     const res = await axios.get(`http://localhost:8000/api/pemilik/${id}`);
     const data = res.data;
-    console.log(data);
+    const token = Cookies.get("token");
+    console.log("token", token);
+    console.log("data", data);
     return data;
   } catch (error) {
     console.log("Error fetching FormUmkm:", error);

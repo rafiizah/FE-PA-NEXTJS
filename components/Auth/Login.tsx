@@ -39,15 +39,13 @@ const Login: React.FC = () => {
     axios
       .request(config)
       .then((response) => {
-        Cookies.set("token", response.data.token);
-        console.log(JSON.stringify(response.data));
-        console.log(response);
-        console.log(response.data.user.role_id);
-        if (response.data.user.role_id === 2) {
+        Cookies.set("token", JSON.stringify(response.data));
+        if (response.data.user.role.name === "umkm") {
           router.push(`/dashboardUmkm/${response.data.user.id}`);
-        } else if (response.data.user.role_id === 3) {
-          // Jika role adalah "asosiasi"
+        } else if (response.data.user.role.name === "asosiasi") {
           router.push(`/dashboardAsosiasi/${response.data.user.id}`);
+        } else if (response.data.user.role.name === "admin") {
+          router.push(`/admin`);
         }
       })
       .catch((error) => {
@@ -76,16 +74,9 @@ const Login: React.FC = () => {
                 width={400}
                 height={32}
               />
-              {/* <Image
-                  className="dark:hidden"
-                  src={"/images/logo/si-umkm.svg"}
-                  alt="Logo"
-                  width={176}
-                  height={32}
-                /> */}
               <p className="2xl:px-20">
-                Anyone can join thousands of members of the East Java
-                UMKM community.
+                Anyone can join thousands of members of the East Java UMKM &
+                Association  community.
               </p>
 
               <span className="mt-15 inline-block">

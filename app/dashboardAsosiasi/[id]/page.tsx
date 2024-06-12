@@ -42,7 +42,7 @@ export default async function FormAsosiasi({ params }: { params: any }) {
     if (formAsosiasiData) {
       return (
         <ProfileAsosiasi
-          id={formAsosiasiData.id}
+          id={formAsosiasiData.user_id}
           namalengkap_asosiasi={formAsosiasiData.namalengkap_asosiasi}
           namasingkat_asosiasi={formAsosiasiData.namasingkat_asosiasi}
           alamat_asosiasi={formAsosiasiData.alamat_asosiasi}
