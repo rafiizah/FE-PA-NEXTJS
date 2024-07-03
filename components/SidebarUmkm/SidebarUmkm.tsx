@@ -13,19 +13,24 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, id }: SidebarProps) => {
-  const savedToken = Cookies.get("token");
-  const tokenObject = savedToken ? JSON.parse(savedToken) : null;
-  const userId = tokenObject?.user?.id;
+  const [userId, setUserId] = useState<string | null>(null);
+  const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(false);
+
+  useEffect(() => {
+    const savedToken = Cookies.get("token");
+    if (savedToken) {
+      try {
+        const tokenObject = JSON.parse(savedToken);
+        setUserId(tokenObject?.user?.id || null);
+      } catch (error) {
+        console.error("Failed to parse token:", error);
+      }
+    }
+  }, []);
 
   const pathname = usePathname();
-
-  const trigger = useRef<any>(null);
-  const sidebar = useRef<any>(null);
-
-  let storedSidebarExpanded = "true";
-  const [sidebarExpanded, setSidebarExpanded] = useState(
-    storedSidebarExpanded === null ? false : storedSidebarExpanded === "true"
-  );
+  const trigger = useRef<HTMLButtonElement>(null);
+  const sidebar = useRef<HTMLElement>(null);
 
   // close on click outside
   useEffect(() => {
@@ -33,8 +38,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, id }: SidebarProps) => {
       if (!sidebar.current || !trigger.current) return;
       if (
         !sidebarOpen ||
-        sidebar.current.contains(target) ||
-        trigger.current.contains(target)
+        sidebar.current.contains(target as Node) ||
+        trigger.current.contains(target as Node)
       )
         return;
       setSidebarOpen(false);
@@ -52,6 +57,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, id }: SidebarProps) => {
     document.addEventListener("keydown", keyHandler);
     return () => document.removeEventListener("keydown", keyHandler);
   });
+
+  useEffect(() => {
+    const storedSidebarExpanded = localStorage.getItem("sidebar-expanded");
+    setSidebarExpanded(storedSidebarExpanded === "true");
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("sidebar-expanded", sidebarExpanded.toString());

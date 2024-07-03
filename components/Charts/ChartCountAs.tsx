@@ -29,9 +29,7 @@ const ChartThree: React.FC = () => {
         const { labels, values } = data;
         setState({
           series: values,
-          labels: labels.map((label: { toString: () => any }) =>
-            label.toString()
-          ),
+          labels: labels,
         });
       } else {
         console.error("Failed to fetch data");
@@ -44,6 +42,8 @@ const ChartThree: React.FC = () => {
   const options: ApexOptions = {
     chart: {
       type: "donut",
+      width: "100%", // Contoh pengaturan width dengan nilai persentase
+      height: "400px",
     },
     colors: ["#10B981", "#375E83", "#259AE6", "#FFA70B"],
     labels: state.labels,
@@ -103,8 +103,10 @@ const ChartThree: React.FC = () => {
       </div>
 
       <div className="-mx-8 flex flex-wrap items-center justify-center gap-y-3">
-        {state.labels.map((index) => (
-          <div key={index} className="label-item"></div>
+        {state.labels.map((label, index) => (
+          <div key={index} className="label-item">
+            {label}
+          </div>
         ))}
       </div>
     </div>

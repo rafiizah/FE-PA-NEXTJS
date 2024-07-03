@@ -3,6 +3,7 @@ import ProfileUmkm from "@/components/Umkm/ProfileUmkm";
 import React from "react";
 import Cookies from "js-cookie";
 
+// Generate static params function
 export async function generateStaticParams() {
   try {
     const res = await fetch("http://localhost:8000/api/pemilik");
@@ -10,7 +11,7 @@ export async function generateStaticParams() {
 
     if (data && Array.isArray(data.umkms)) {
       return data.umkms.map((umkm: any) => ({
-        id: umkm.id.toString(),
+        id: umkm.user_id.toString(),
       }));
     } else {
       throw new Error("Data structure does not match expected format.");
@@ -21,26 +22,24 @@ export async function generateStaticParams() {
   }
 }
 
-async function getFormUmkm(id: any) {
+// Function to get UMKM profile data
+async function getUmkmProfile(userId: any) {
   try {
-    const res = await axios.get(`http://localhost:8000/api/pemilik/${id}`);
+    const res = await axios.get(`http://localhost:8000/api/pemilik/${userId}`);
     const data = res.data;
     const token = Cookies.get("token");
-    console.log("token", token);
-    console.log("data", data);
     return data;
   } catch (error) {
-    console.log("Error fetching FormUmkm:", error);
+    console.error("Error fetching UMKM profile:", error);
     return null;
   }
 }
 
-const FormUmkm: React.FC<{ params: any }> = async ({ params }) => {
+// Component to display UMKM profile
+const DashboardUmkm: React.FC<{ params: any }> = async ({ params }) => {
   try {
-    console.log(params.id);
-    const data = await getFormUmkm(params.id);
-    console.log(data);
-
+    const userId = params.id;
+    const data = await getUmkmProfile(userId);
     if (data) {
       return (
         <ProfileUmkm
@@ -63,12 +62,12 @@ const FormUmkm: React.FC<{ params: any }> = async ({ params }) => {
         />
       );
     } else {
-      throw new Error("Data formUmkmData tidak tersedia.");
+      throw new Error("Profile data not available.");
     }
   } catch (error) {
-    console.error("Error in FormUmkm component:", error);
+    console.error("Error in DashboardUmkm component:", error);
     return <h1>Error</h1>;
   }
 };
 
-export default FormUmkm;
+export default DashboardUmkm;

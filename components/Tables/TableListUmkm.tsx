@@ -34,7 +34,6 @@ export default function App() {
       const response = await axios.get("http://localhost:8000/api/pemilik");
       const umkmData: Umkm[] = response.data.umkm;
 
-      console.log("Data Umkm:", umkmData);
       setData(umkmData);
     } catch (error) {
       console.error("Error fetching data:", error);

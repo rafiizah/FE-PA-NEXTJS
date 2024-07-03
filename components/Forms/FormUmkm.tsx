@@ -81,13 +81,11 @@ const FormUmkm: React.FC<FormUmkmProps> = ({ id }) => {
     }
   };
 
-  //method "storePost"
   const storePost = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
     setIsLoading(true);
 
-    // Membuat objek FormData
     const formData = new FormData();
 
     let legalitasValues = [];
@@ -108,7 +106,6 @@ const FormUmkm: React.FC<FormUmkmProps> = ({ id }) => {
     }
     const legalitas_usaha = legalitasValues.join(",");
 
-    // Menambahkan data ke FormData
     formData.append("nama_pemilik", nama_pemilik);
     formData.append("nomor_pemilik", nomor_pemilik);
     formData.append("alamat_pemilik", alamat_pemilik);
@@ -125,7 +122,6 @@ const FormUmkm: React.FC<FormUmkmProps> = ({ id }) => {
     formData.append("deskripsi_usaha", deskripsi_usaha);
     formData.append("legalitas_usaha", legalitas_usaha);
 
-    // Menambahkan data gambar ke FormData
     if (image) {
       formData.append("image", image);
     }
@@ -140,16 +136,47 @@ const FormUmkm: React.FC<FormUmkmProps> = ({ id }) => {
       data: formData,
     };
 
-    axios
-      .request(config)
-      .then((response: any) => {
-        console.log(JSON.stringify(response.data));
-        console.log(response);
-        router.push(`/dashboardUmkm/${response.data.umkm.user_id}`);
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
+    try {
+      const response = await axios.request(config);
+
+      if (response.data && response.data.umkm && response.data.umkm.user_id) {
+        const loginData = new FormData();
+        loginData.append("email", email);
+        loginData.append("password", password);
+
+        let loginForm = {
+          method: "post",
+          maxBodyLength: Infinity,
+          url: "http://localhost:8000/api/login",
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          data: loginData,
+        };
+
+        axios
+          .request(loginForm)
+          .then((LoginResponse: any) => {
+            Cookies.set("token", JSON.stringify(LoginResponse.data));
+            if (LoginResponse.data.user.role.name === "umkm") {
+              router.push(`/dashboardUmkm/${LoginResponse.data.user.id}`);
+            } else if (LoginResponse.data.user.role.name === "asosiasi") {
+              router.push(`/dashboardAsosiasi/${LoginResponse.data.user.id}`);
+            } else if (LoginResponse.data.user.role.name === "admin") {
+              router.push(`/admin`);
+            }
+          })
+          .catch((error: any) => {
+            console.error(error.response.data.message);
+          });
+      } else {
+        console.error("Unexpected response structure:", response.data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

@@ -30,6 +30,12 @@ const ChartYearAs: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         const { labels, values } = data;
+
+        // Convert labels to numbers and sort them
+        const sortedLabels = labels
+          .map((label: any) => parseInt(label, 10))
+          .sort((a: any, b: any) => a - b);
+
         const newSeriesData = [
           {
             name: "Data",
@@ -38,7 +44,7 @@ const ChartYearAs: React.FC = () => {
         ];
         setState({
           series: newSeriesData,
-          categories: labels,
+          categories: sortedLabels.map((label: any) => label.toString()), // Convert back to strings
         });
       } else {
         console.error("Failed to fetch data");
@@ -57,7 +63,8 @@ const ChartYearAs: React.FC = () => {
     colors: ["#3C50E0", "#80CAEE"],
     chart: {
       fontFamily: "Satoshi, sans-serif",
-      height: 335,
+      height: "335px",
+      width: "100%",
       type: "area",
       dropShadow: {
         enabled: true,
@@ -76,7 +83,7 @@ const ChartYearAs: React.FC = () => {
         breakpoint: 1024,
         options: {
           chart: {
-            height: 300,
+            height: "300px",
           },
         },
       },

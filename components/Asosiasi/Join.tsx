@@ -22,14 +22,12 @@ export default function Page({ id }: PageProps) {
 
   // Get the cookie value
   const cookieValue = Cookies.get("token");
-  console.log("token:", cookieValue);
 
   const fetchData = useCallback(async () => {
     try {
       const response = await axios.get(
         `http://localhost:8000/api/asosiasi?page=${page}&limit=${rowsPerPage}`
       );
-      console.log("Fetched Data:", response.data);
       setAsosiasi(response.data.asosiasi || []);
       setTotalItems(response.data.total);
     } catch (error) {
@@ -53,14 +51,12 @@ export default function Page({ id }: PageProps) {
       updatedSelectedUsers.splice(selectedIndex, 1);
       setSelectedUsers(updatedSelectedUsers);
     }
-    console.log("Selected Users:", selectedUsers);
   };
 
   const paginatedData = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
     const data = asosiasis.slice(start, end);
-    console.log("Paginated Data:", data);
     return data;
   }, [asosiasis, page]);
 
@@ -74,13 +70,9 @@ export default function Page({ id }: PageProps) {
       tanggal_bergabung: new Date().toISOString().split("T")[0],
     }));
 
-    console.log("Post Data:", postData);
-
     axios
       .post("http://localhost:8000/api/umkmAsosiasi/create", postData)
-      .then((response) => {
-        console.log("Response:", response.data);
-      })
+      .then((response) => {})
       .catch((error) => {
         console.error("Error submitting data:", error);
       });

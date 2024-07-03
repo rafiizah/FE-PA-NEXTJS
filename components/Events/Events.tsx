@@ -33,9 +33,7 @@ const Events: React.FC<EventsProps> = ({
       if (token) {
         const { access_token } = JSON.parse(token);
         setIsLoggedIn(!!access_token);
-        if (access_token) {
-          console.log("Access token retrieved: ", access_token);
-        } else {
+        if (!access_token) {
           console.warn("No access token found");
         }
       } else {

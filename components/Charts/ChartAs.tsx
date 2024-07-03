@@ -1,24 +1,21 @@
-"use client";
 import { useState, useEffect } from "react";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-interface ChartFourState {
+interface ChartAsState {
   series: {
-    labels: any[];
-    values: number[]; // Merubah properti menjadi 'values'
-  }[];
+    labels: string[];
+    values: number[];
+  };
 }
 
 function ChartAs() {
-  const [state, setState] = useState<ChartFourState>({
-    series: [
-      {
-        values: [], // Mengubah properti menjadi 'values'
-        labels: [],
-      },
-    ],
+  const [state, setState] = useState<ChartAsState>({
+    series: {
+      values: [],
+      labels: [],
+    },
   });
 
   useEffect(() => {
@@ -31,14 +28,11 @@ function ChartAs() {
       if (response.ok) {
         const data = await response.json();
         const { labels, values } = data;
-        const newSeriesData = [
-          {
-            labels: labels,
-            values: values, // Merubah properti menjadi 'values'
-          },
-        ];
         setState({
-          series: newSeriesData,
+          series: {
+            labels: labels || [],
+            values: values || [],
+          },
         });
       } else {
         console.error("Failed to fetch data");
@@ -50,7 +44,7 @@ function ChartAs() {
 
   const options: ApexOptions = {
     xaxis: {
-      categories: state.series[0]?.labels || [],
+      categories: state.series.labels || [],
       axisBorder: {
         show: false,
       },
@@ -60,9 +54,10 @@ function ChartAs() {
     },
     colors: ["#3C50E0"],
     chart: {
-      fontFamily: "Satoshi, sans-serif",
       type: "bar",
-      height: 350,
+      width: "100%", // Menambahkan properti width
+      height: "350px",
+      fontFamily: "Satoshi, sans-serif",
       toolbar: {
         show: false,
       },
@@ -114,7 +109,7 @@ function ChartAs() {
   const seriesData = [
     {
       name: "Jumlah Asosiasi",
-      data: state.series[0]?.values || [], // Menggunakan properti 'values'
+      data: state.series.values || [],
     },
   ];
 
@@ -132,7 +127,7 @@ function ChartAs() {
             options={options}
             series={seriesData}
             type="bar"
-            height={350}
+            height={"350px"}
           />
         </div>
       </div>

@@ -7,6 +7,7 @@ import CheckboxEight from "@/components/Checkboxes/CheckboxEight";
 import { useRouter } from "next/navigation";
 import { Metadata } from "next";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export const metadata: Metadata = {
   title: "Form Asosiasi Page | SI UMKM",
@@ -133,16 +134,51 @@ const FormAsosiasi: React.FC<FormAsosiasiProps> = ({ id }) => {
       data: formData,
     };
 
-    axios
-      .request(config)
-      .then((response: any) => {
-        console.log(JSON.stringify(response.data));
-        console.log(response);
-        router.push(`/dashboardAsosiasi/${response.data.asosiasi.user_id}`);
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
+    try {
+      const response = await axios.request(config);
+
+      if (
+        response.data &&
+        response.data.asosiasi &&
+        response.data.asosiasi.user_id
+      ) {
+        const loginData = new FormData();
+        loginData.append("email", email);
+        loginData.append("password", password);
+
+        let loginForm = {
+          method: "post",
+          maxBodyLength: Infinity,
+          url: "http://localhost:8000/api/login",
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          data: loginData,
+        };
+
+        axios
+          .request(loginForm)
+          .then((LoginResponse: any) => {
+            Cookies.set("token", JSON.stringify(LoginResponse.data));
+            if (LoginResponse.data.user.role.name === "umkm") {
+              router.push(`/dashboardUmkm/${LoginResponse.data.user.id}`);
+            } else if (LoginResponse.data.user.role.name === "asosiasi") {
+              router.push(`/dashboardAsosiasi/${LoginResponse.data.user.id}`);
+            } else if (LoginResponse.data.user.role.name === "admin") {
+              router.push(`/admin`);
+            }
+          })
+          .catch((error: any) => {
+            console.error(error);
+          });
+      } else {
+        console.error("Unexpected response structure:", response.data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

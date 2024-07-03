@@ -34,7 +34,6 @@ async function deleteMember(id: string) {
     if (!res.ok) {
       throw new Error("Network response was not ok");
     }
-    console.log("Member deleted successfully");
   } catch (error) {
     console.error("Error deleting member:", error);
   }
@@ -55,7 +54,6 @@ export default function TableOne() {
       const response = await axios.get("http://localhost:8000/api/event");
       const eventData: Event[] = response.data.event;
 
-      console.log("Data Event:", eventData);
       setData(eventData);
     } catch (error) {
       console.error("Error fetching data:", error);

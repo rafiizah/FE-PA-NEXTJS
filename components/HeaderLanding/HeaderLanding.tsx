@@ -59,7 +59,7 @@ const Headeranding = () => {
 
   return (
     <header
-      className="fixed top-0 w-full text-gray-600 body-font shadow-3 transition-all"
+      className="fixed top-0 z-50 w-full text-gray-600 body-font shadow-3 transition-all"
       style={{ backgroundColor: "#ffffff" }}
     >
       <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">

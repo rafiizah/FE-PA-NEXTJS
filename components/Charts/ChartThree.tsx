@@ -65,7 +65,7 @@ const ChartThree: React.FC = () => {
         breakpoint: 2600,
         options: {
           chart: {
-            width: 380,
+            width: "380px",
           },
         },
       },
@@ -73,7 +73,7 @@ const ChartThree: React.FC = () => {
         breakpoint: 640,
         options: {
           chart: {
-            width: 200,
+            width: "200%",
           },
         },
       },

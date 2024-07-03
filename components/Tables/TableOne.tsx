@@ -42,7 +42,6 @@ async function deleteMember(id: string) {
     if (!res.ok) {
       throw new Error("Network response was not ok");
     }
-    console.log("Member deleted successfully");
   } catch (error) {
     console.error("Error deleting member:", error);
   }
@@ -63,7 +62,6 @@ export default function TableOne() {
       const response = await axios.get("http://localhost:8000/api/pemilik");
       const umkmData: Umkm[] = response.data.umkm;
 
-      console.log("Data Umkm:", umkmData);
       setData(umkmData);
     } catch (error) {
       console.error("Error fetching data:", error);

@@ -34,7 +34,6 @@ export default function App() {
       const response = await axios.get("http://localhost:8000/api/asosiasi");
       const asosiasiData: Asosiasi[] = response.data.asosiasi;
 
-      console.log("Data Asosiasi:", asosiasiData); // Tambahkan log untuk memeriksa struktur data
       setData(asosiasiData);
     } catch (error) {
       console.error("Error fetching data:", error);

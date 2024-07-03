@@ -128,12 +128,10 @@ const FormUmkm: React.FC<FormUmkmProps> = ({ id }) => {
     axios
       .request(config)
       .then((response: any) => {
-        console.log(JSON.stringify(response.data));
-        console.log(response);
         router.push(`/dashboardUmkm/${response.data.user.id}`);
       })
       .catch((error: any) => {
-        console.log(error);
+        console.error(error);
       });
   };
   return (

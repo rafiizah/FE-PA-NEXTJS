@@ -41,7 +41,6 @@ async function deleteMember(id: string) {
     if (!res.ok) {
       throw new Error("Network response was not ok");
     }
-    console.log("Member deleted successfully");
   } catch (error) {
     console.error("Error deleting member:", error);
   }
@@ -61,7 +60,6 @@ export default function TableTwo() {
       const response = await axios.get("http://localhost:8000/api/asosiasi");
       const asosiasiData: Asosiasi[] = response.data.asosiasi;
 
-      console.log("Data Umkm:", asosiasiData); // Tambahkan log untuk memeriksa struktur data
       setData(asosiasiData);
     } catch (error) {
       console.error("Error fetching data:", error);

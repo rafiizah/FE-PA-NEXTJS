@@ -27,20 +27,16 @@ async function getFormUmkm(id: any) {
     const res = await axios.get(`http://localhost:8000/api/pemilik/${id}`);
     const data = res.data;
     const token = Cookies.get("token");
-    console.log("token", token);
-    console.log("data", data);
     return data;
   } catch (error) {
-    console.log("Error fetching FormUmkm:", error);
+    console.error("Error fetching FormUmkm:", error);
     return null;
   }
 }
 
 const FormUmkm: React.FC<{ params: any }> = async ({ params }) => {
   try {
-    console.log(params.id);
     const data = await getFormUmkm(params.id);
-    console.log(data);
 
     if (data) {
       return (

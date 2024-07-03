@@ -34,9 +34,7 @@ async function getFormAsosiasi(id: any) {
 
 export default async function FormAsosiasi({ params }: { params: any }) {
   try {
-    console.log(params.id);
     const formAsosiasiData = await getFormAsosiasi(params.id);
-    console.log({ formAsosiasiData });
 
     // Pastikan formUmkmData berisi semua properti yang diperlukan oleh ProfileUmkm
     if (formAsosiasiData) {

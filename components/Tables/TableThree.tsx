@@ -30,7 +30,6 @@ async function deleteMember(id: string) {
     if (!res.ok) {
       throw new Error("Network response was not ok");
     }
-    console.log("Member deleted successfully");
   } catch (error) {
     console.error("Error deleting member:", error);
   }

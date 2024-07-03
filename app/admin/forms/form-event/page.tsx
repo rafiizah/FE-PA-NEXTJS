@@ -69,13 +69,11 @@ const FormEvent: React.FC<FormEventProps> = ({ id }) => {
     axios
       .request(config)
       .then((response: any) => {
-        console.log(JSON.stringify(response.data));
         router.push("/admin");
         alert("Message sent successfully!");
       })
       .catch((error: any) => {
-        console.log(error);
-        // Tampilkan alert jika terjadi kesalahan
+        console.error(error);
         alert("An error occurred. Message could not be sent.");
       });
   };

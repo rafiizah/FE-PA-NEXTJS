@@ -116,12 +116,10 @@ const FormAsosiasi: React.FC<FormAsosiasiProps> = ({ id }) => {
     axios
       .request(config)
       .then((response: any) => {
-        console.log(JSON.stringify(response.data));
-        console.log(response);
         router.push(`/dashboardAsosiasi/${response.data.asosiasi.id}`);
       })
       .catch((error: any) => {
-        console.log(error);
+        console.error(error);
       });
   };
 

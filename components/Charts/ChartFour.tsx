@@ -7,7 +7,7 @@ const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
 interface ChartFourState {
   series: {
     labels: any[];
-    values: number[]; // Merubah properti menjadi 'values'
+    values: number[];
   }[];
 }
 
@@ -15,7 +15,7 @@ function ChartFour() {
   const [state, setState] = useState<ChartFourState>({
     series: [
       {
-        values: [], // Mengubah properti menjadi 'values'
+        values: [],
         labels: [],
       },
     ],
@@ -34,7 +34,7 @@ function ChartFour() {
         const newSeriesData = [
           {
             labels: labels,
-            values: values, // Merubah properti menjadi 'values'
+            values: values,
           },
         ];
         setState({
@@ -62,7 +62,8 @@ function ChartFour() {
     chart: {
       fontFamily: "Satoshi, sans-serif",
       type: "bar",
-      height: 350,
+      height: "350px",
+      width: "100%",
       toolbar: {
         show: false,
       },
@@ -114,9 +115,18 @@ function ChartFour() {
   const seriesData = [
     {
       name: "Jumlah UMKM",
-      data: state.series[0]?.values || [], // Menggunakan properti 'values'
+      data: state.series[0]?.values || [], // Ensure default empty array when values are undefined
     },
   ];
+
+  // Adjust the loading check to wait for data to be loaded
+  if (state.series.length === 0 || !state.series[0]?.values) {
+    return (
+      <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5">
@@ -132,7 +142,8 @@ function ChartFour() {
             options={options}
             series={seriesData}
             type="bar"
-            height={350}
+            height={"350px"}
+            width={"100%"}
           />
         </div>
       </div>

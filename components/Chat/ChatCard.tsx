@@ -1,107 +1,165 @@
-import Link from "next/link";
-import Image from "next/image";
-import { Chat } from "@/types/chat";
+"use client";
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+} from "@nextui-org/react";
+import axios from "axios";
+import Cookies from "js-cookie";
 
-const chatData: Chat[] = [
-  {
-    avatar: "/images/user/user-01.png",
-    name: "Devid Heilo",
-    text: "How are you?",
-    time: 12,
-    textCount: 3,
-    dot: 3,
-  },
-  {
-    avatar: "/images/user/user-02.png",
-    name: "Henry Fisher",
-    text: "Waiting for you!",
-    time: 12,
-    textCount: 0,
-    dot: 1,
-  },
-  {
-    avatar: "/images/user/user-04.png",
-    name: "Jhon Doe",
-    text: "What's up?",
-    time: 32,
-    textCount: 0,
-    dot: 3,
-  },
-  {
-    avatar: "/images/user/user-05.png",
-    name: "Jane Doe",
-    text: "Great",
-    time: 32,
-    textCount: 2,
-    dot: 6,
-  },
-  {
-    avatar: "/images/user/user-01.png",
-    name: "Jhon Doe",
-    text: "How are you?",
-    time: 32,
-    textCount: 0,
-    dot: 3,
-  },
-  {
-    avatar: "/images/user/user-03.png",
-    name: "Jhon Doe",
-    text: "How are you?",
-    time: 32,
-    textCount: 3,
-    dot: 6,
-  },
-];
+interface Asosiasi {
+  id: string;
+  namalengkap_asosiasi: string;
+  jenis_bidang_asosiasi: string;
+}
 
-const ChatCard = () => {
+interface Props {
+  id: string;
+}
+
+export default function Page({ id }: Props) {
+  const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
+  const [asosiasis, setAsosiasi] = useState<Asosiasi[]>([]);
+  const [umkmId, setUmkmId] = useState<string>();
+
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/asosiasi?limit=1000`
+      );
+      setAsosiasi(response.data.asosiasi || []);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const getTokenFromLocalStorage = () => {
+    const token = Cookies.get("token");
+    return token ? JSON.parse(token) : null;
+  };
+
+  const fetchUmkmId = useCallback(async (user_id: any) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/pemilik/${user_id}`
+      );
+      setUmkmId(response.data.id || "");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching umkm_id: ", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    const token = getTokenFromLocalStorage();
+    if (token) {
+      const user = token.user;
+      if (user && user.id) {
+        fetchUmkmId(user.id);
+      } else {
+        console.error("User ID not found in token");
+      }
+    }
+  }, [fetchUmkmId]);
+
+  const handleSelectionChange = (keys: Set<React.Key>) => {
+    setSelectedUsers(new Set(Array.from(keys).map(String)));
+  };
+
+  const selectedValues = Array.from(selectedUsers)
+    .map((key) => {
+      const item = asosiasis.find((a) => a.id === key);
+      return item ? item.namalengkap_asosiasi : key;
+    })
+    .join(", ");
+
+  const handleSubmit = async () => {
+    const postData = {
+      umkm_id: umkmId,
+      asosiasi_id: Array.from(selectedUsers),
+      di_terima: true,
+      tanggal_bergabung: new Date().toISOString().split("T")[0],
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/umkmAsosiasi/create",
+        postData
+      );
+      alert("Data has been successfully submitted!");
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        console.error(
+          "Error submitting data:",
+          error.response?.data || error.message
+        );
+      } else {
+        console.error("Unexpected error submitting data:", error);
+      }
+    }
+  };
+
   return (
-    <div className="col-span-12 rounded-sm border border-stroke bg-white py-6 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-4">
-      <h4 className="mb-6 px-7.5 text-xl font-semibold text-black dark:text-white">
-        Chats
-      </h4>
-
-      <div>
-        {chatData.map((chat, key) => (
-          <Link
-            href="/"
-            className="flex items-center gap-5 py-3 px-7.5 hover:bg-gray-3 dark:hover:bg-meta-4"
-            key={key}
+    <div>
+      <section className="text-gray-600 body-font">
+        <div className="container py-9 mx-auto">
+          <div className="text-center mb-20">
+            <h1 className="sm:text-3xl text-2xl font-medium text-center title-font text-gray-900 mb-4">
+              Raw Denim Heirloom Man Braid
+            </h1>
+            <p className="text-base leading-relaxed xl:w-2/4 lg:w-3/4 mx-auto">
+              Blue bottle crucifix vinyl post-ironic four dollar toast vegan
+              taxidermy. Gastropub indxgo juice poutine, ramps microdosing banh
+              mi pug.
+            </p>
+          </div>
+          <div className="flex flex-wrap lg:w-4/5 sm:mx-auto sm:mb-2 -mx-2 justify-center">
+            <Dropdown>
+              <DropdownTrigger>
+                <Button variant="bordered" className="capitalize">
+                  {selectedValues || "Select Asosiasi"}
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                aria-label="Asosiasi selection"
+                variant="flat"
+                closeOnSelect={false}
+                disallowEmptySelection
+                selectionMode="multiple"
+                selectedKeys={selectedUsers}
+                onSelectionChange={(keys) =>
+                  handleSelectionChange(new Set(keys))
+                }
+                className="max-h-60 overflow-auto"
+              >
+                {asosiasis.map((asosiasi) => (
+                  <DropdownItem
+                    key={asosiasi.id}
+                    description={asosiasi.jenis_bidang_asosiasi}
+                  >
+                    <div>
+                      <div>{asosiasi.namalengkap_asosiasi}</div>
+                    </div>
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </Dropdown>
+          </div>
+          <button
+            className="flex mx-auto mt-16 text-white bg-indigo-500 border-0 py-2 px-8 bg-meta-10 focus:outline-none hover:bg-meta-5 rounded text-lg"
+            onClick={handleSubmit}
           >
-            <div className="relative h-14 w-14 rounded-full">
-              <Image src={chat.avatar} alt="User" width={57} height={56} />
-              <span
-                className={`absolute right-0 bottom-0 h-3.5 w-3.5 rounded-full border-2 border-white ${
-                  chat.dot === 6 ? "bg-meta-6" : `bg-meta-${chat.dot}`
-                } `}
-              ></span>
-            </div>
-
-            <div className="flex flex-1 items-center justify-between">
-              <div>
-                <h5 className="font-medium text-black dark:text-white">
-                  {chat.name}
-                </h5>
-                <p>
-                  <span className="text-sm text-black dark:text-white">
-                    {chat.text}
-                  </span>
-                  <span className="text-xs"> . {chat.time} min</span>
-                </p>
-              </div>
-              {chat.textCount !== 0 && (
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary">
-                  <span className="text-sm font-medium text-white">
-                    {" "}
-                    {chat.textCount}
-                  </span>
-                </div>
-              )}
-            </div>
-          </Link>
-        ))}
-      </div>
+            Submit
+          </button>
+        </div>
+      </section>
     </div>
   );
-};
-
-export default ChatCard;
+}

@@ -1,4 +1,3 @@
-"use client";
 import { ApexOptions } from "apexcharts";
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
@@ -30,6 +29,10 @@ const ChartOne: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         const { labels, values } = data;
+
+        // Sort labels (years) in ascending order
+        labels.sort((a: any, b: any) => a - b);
+
         const newSeriesData = [
           {
             name: "Data",
@@ -76,7 +79,8 @@ const ChartOne: React.FC = () => {
         breakpoint: 1024,
         options: {
           chart: {
-            height: 300,
+            height: "300px",
+            width: "100%",
           },
         },
       },
@@ -156,7 +160,10 @@ const ChartOne: React.FC = () => {
       <div>
         <div id="chartOne" className="-ml-5 h-[355px] w-[105%]">
           <ReactApexChart
-            options={options}
+            options={{
+              ...options,
+              xaxis: { ...options.xaxis, categories: state.categories },
+            }}
             series={state.series}
             type="area"
             width="100%"
