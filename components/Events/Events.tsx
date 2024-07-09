@@ -26,6 +26,9 @@ const Events: React.FC<EventsProps> = ({
 }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
+  const savedToken = Cookies.get("token");
+  const tokenObject = savedToken ? JSON.parse(savedToken) : null;
+  const userId = tokenObject?.user?.id;
 
   useEffect(() => {
     const checkLoginStatus = () => {
@@ -54,15 +57,15 @@ const Events: React.FC<EventsProps> = ({
           throw new Error("Token data is missing");
         }
 
-        const { access_token } = JSON.parse(token);
+        const { access_token, user } = JSON.parse(token);
 
         const response = await axios.post(
           "http://localhost:8000/api/event-registrations",
           {
-            umkm_id: id,
-            event_id: id,
+            user_id: userId, // Gunakan user.id sebagai umkm_id
+            event_id: id, // Gunakan id dari props untuk event_id
             status: true,
-            date: new Date().toISOString().split("T")[0], // Current date in YYYY-MM-DD format
+            date: new Date().toISOString().split("T")[0],
           },
           {
             headers: {
@@ -75,7 +78,6 @@ const Events: React.FC<EventsProps> = ({
         console.error("There was an error!", error);
 
         if (axios.isAxiosError(error)) {
-          // Handle Axios error
           if (
             error.response &&
             error.response.data &&
@@ -88,7 +90,6 @@ const Events: React.FC<EventsProps> = ({
             alert("Failed to register for the event.");
           }
         } else if (error instanceof Error) {
-          // Handle generic error
           alert(`An error occurred: ${error.message}`);
         } else {
           alert("An unknown error occurred.");

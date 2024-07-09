@@ -40,9 +40,11 @@ const DataJoinEvent: React.FC = () => {
         const response = await axios.get(
           "http://localhost:8000/api/event-registrations"
         );
-        setEvents(response.data.data);
+        console.log("API Response:", response.data); // Debugging: log the API response
+        setEvents(response.data); // Assuming response.data is the array of events
       } catch (err) {
         setError("Error fetching data");
+        console.error("Fetch error:", err); // Debugging: log the error
       } finally {
         setLoading(false);
       }
