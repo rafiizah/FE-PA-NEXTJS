@@ -1,24 +1,25 @@
-import React, { ReactNode, useState, useEffect, Children } from "react";
-import Image from "next/image";
+"use client";
 
-interface CardDataStatsProps {
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import { UserFacade } from "@/services/UserFacade";
+
+interface CardDataUserProps {
   title: string;
-  users: string;
-  Children: ReactNode;
+  users?: string;
+  Children?: React.ReactNode;
 }
 
-const CardDataUser: React.FC<CardDataStatsProps> = ({ title }) => {
+const CardDataUser: React.FC<CardDataUserProps> = ({ title }) => {
   const [totalUser, setTotalUser] = useState<string>("Loading...");
 
   useEffect(() => {
-    // Mengambil total user dari API
-    fetch("http://localhost:8000/api/jumlah-user")
-      .then((response) => response.json())
-      .then((data) => setTotalUser(data.total_users))
-      .catch((error) => {
-        console.error("Error:", error);
-        setTotalUser("Error");
-      });
+    const fetchTotalUsers = async () => {
+      const result = await UserFacade.getTotalUsers();
+      setTotalUser(result);
+    };
+
+    fetchTotalUsers();
   }, []);
 
   return (

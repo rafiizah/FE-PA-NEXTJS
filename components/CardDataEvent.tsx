@@ -1,24 +1,25 @@
-import React, { ReactNode, useState, useEffect, Children } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { EventFacade } from "@/services/EventFacade";
 
 interface CardDataStatsProps {
   title: string;
-  event: string;
-  Children: ReactNode;
+  event?: any; // Optional, can be used for additional data if needed
+  Children?: any; // Optional, can be used for additional data if needed
 }
 
-const CardDataStats: React.FC<CardDataStatsProps> = ({ title }) => {
+const CardDataEvent: React.FC<CardDataStatsProps> = ({ title }) => {
   const [totalEvent, setTotalEvent] = useState<string>("Loading...");
 
   useEffect(() => {
-    // Mengambil total UMKM dari API
-    fetch("http://localhost:8000/api/jumlah-event")
-      .then((response) => response.json())
-      .then((data) => setTotalEvent(data.jumlah_event))
-      .catch((error) => {
-        console.error("Error:", error);
-        setTotalEvent("Error");
-      });
+    const fetchData = async () => {
+      const result = await EventFacade.getTotalEvent();
+      setTotalEvent(result);
+    };
+
+    fetchData();
   }, []);
 
   return (
@@ -44,4 +45,4 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({ title }) => {
   );
 };
 
-export default CardDataStats;
+export default CardDataEvent;

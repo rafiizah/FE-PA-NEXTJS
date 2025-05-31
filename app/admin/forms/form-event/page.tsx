@@ -1,5 +1,6 @@
 "use client";
 import Breadcrumb from "@/components/Charts/Breadcrumbs/Breadcrumb";
+import { FormEventFacade } from "@/services/FormEventFacade";
 import { Metadata } from "next";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, ChangeEvent, ChangeEventHandler } from "react";
@@ -40,42 +41,25 @@ const FormEvent: React.FC<FormEventProps> = ({ id }) => {
 
   const storePost = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-
     setIsLoading(true);
 
-    // Membuat objek FormData
-    const formData = new FormData();
-    // Menambahkan data ke FormData
-    formData.append("nama_event", nama_event);
-    formData.append("date", date);
-    formData.append("time", time);
-    formData.append("location", location);
-    formData.append("description", description);
-    // Menambahkan data gambar ke FormData
-    if (image) {
-      formData.append("image", image);
+    try {
+      await FormEventFacade.createEvent(
+        nama_event,
+        date,
+        time,
+        location,
+        description,
+        image
+      );
+      alert("Message sent successfully!");
+      router.push("/admin");
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred. Message could not be sent.");
+    } finally {
+      setIsLoading(false);
     }
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: "http://localhost:8000/api/event/",
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      data: formData,
-    };
-
-    axios
-      .request(config)
-      .then((response: any) => {
-        router.push("/admin");
-        alert("Message sent successfully!");
-      })
-      .catch((error: any) => {
-        console.error(error);
-        alert("An error occurred. Message could not be sent.");
-      });
   };
 
   return (
@@ -102,7 +86,7 @@ const FormEvent: React.FC<FormEventProps> = ({ id }) => {
                       type="text"
                       value={nama_event}
                       onChange={(e) => setNama_event(e.target.value)}
-                      placeholder="Masukkan Nama Lemgkap Asosiasi"
+                      placeholder="Masukkan Nama Event"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
                   </div>
@@ -115,7 +99,7 @@ const FormEvent: React.FC<FormEventProps> = ({ id }) => {
                       type="date"
                       value={date}
                       onChange={(e) => setDate(e.target.value)}
-                      placeholder="Masukkan Nama Singkat Asosiasi"
+                      placeholder="Masukkan Tanggal Event"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
                   </div>
@@ -130,7 +114,7 @@ const FormEvent: React.FC<FormEventProps> = ({ id }) => {
                       type="text"
                       value={time}
                       onChange={(e) => setTime(e.target.value)}
-                      placeholder="Masukkan Alamat Asosiasi"
+                      placeholder="Masukkan Waktu Event"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
                   </div>
@@ -143,7 +127,7 @@ const FormEvent: React.FC<FormEventProps> = ({ id }) => {
                       type="text"
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
-                      placeholder="Masukkan kode Pos Asosiasi"
+                      placeholder="Masukkan Lokasi Event"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
                   </div>
@@ -170,7 +154,7 @@ const FormEvent: React.FC<FormEventProps> = ({ id }) => {
                   </label>
                   <textarea
                     rows={3}
-                    placeholder="Masukkan Deskripsi Usaha"
+                    placeholder="Masukkan Deskripsi Event"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"

@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
+import { ChartDataFacade } from "@/services/ChartDataFacade";
+
 const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 interface ChartFourState {
@@ -27,36 +29,24 @@ function ChartFour() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/chart-data");
-      if (response.ok) {
-        const data = await response.json();
-        const { labels, values } = data;
-        const newSeriesData = [
-          {
-            labels: labels,
-            values: values,
-          },
-        ];
-        setState({
-          series: newSeriesData,
-        });
-      } else {
-        console.error("Failed to fetch data");
-      }
+      const data = await ChartDataFacade.getUMKMChartData();
+      const newSeriesData = [
+        {
+          labels: data.labels,
+          values: data.values,
+        },
+      ];
+      setState({ series: newSeriesData });
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching chart data:", error);
     }
   };
 
   const options: ApexOptions = {
     xaxis: {
       categories: state.series[0]?.labels || [],
-      axisBorder: {
-        show: false,
-      },
-      axisTicks: {
-        show: false,
-      },
+      axisBorder: { show: false },
+      axisTicks: { show: false },
     },
     colors: ["#3C50E0"],
     chart: {
@@ -64,23 +54,17 @@ function ChartFour() {
       type: "bar",
       height: "350px",
       width: "100%",
-      toolbar: {
-        show: false,
-      },
+      toolbar: { show: false },
     },
     plotOptions: {
       bar: {
         horizontal: false,
         columnWidth: "55%",
         borderRadius: 4,
-        dataLabels: {
-          position: "top",
-        },
+        dataLabels: { position: "top" },
       },
     },
-    dataLabels: {
-      enabled: true,
-    },
+    dataLabels: { enabled: true },
     stroke: {
       show: true,
       width: 4,
@@ -91,35 +75,24 @@ function ChartFour() {
       position: "top",
       horizontalAlign: "left",
       fontFamily: "inter",
-      markers: {
-        radius: 99,
-      },
+      markers: { radius: 99 },
     },
     grid: {
-      yaxis: {
-        lines: {
-          show: false,
-        },
-      },
+      yaxis: { lines: { show: false } },
     },
-    fill: {
-      opacity: 1,
-    },
+    fill: { opacity: 1 },
     tooltip: {
-      x: {
-        show: true,
-      },
+      x: { show: true },
     },
   };
 
   const seriesData = [
     {
       name: "Jumlah UMKM",
-      data: state.series[0]?.values || [], // Ensure default empty array when values are undefined
+      data: state.series[0]?.values || [],
     },
   ];
 
-  // Adjust the loading check to wait for data to be loaded
   if (state.series.length === 0 || !state.series[0]?.values) {
     return (
       <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5">

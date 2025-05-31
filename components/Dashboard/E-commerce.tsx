@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import CardDataStats from "../CardDataStats";
+import CardDataStats from "../CardDataUmkm";
 import CardDataAsosiasi from "../CardDataAsosiasi";
 import CardDataUser from "../CardDataUser";
 import Breadcrumb from "@/components/Charts/Breadcrumbs/Breadcrumb";

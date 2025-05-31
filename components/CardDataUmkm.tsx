@@ -1,5 +1,6 @@
 import React, { ReactNode, useState, useEffect, Children } from "react";
 import Image from "next/image";
+import { UMKMFacade } from "@/services/UMKMFacade";
 
 interface CardDataStatsProps {
   title: string;
@@ -7,18 +8,16 @@ interface CardDataStatsProps {
   Children: ReactNode;
 }
 
-const CardDataStats: React.FC<CardDataStatsProps> = ({ title }) => {
+const CardDataUmkm: React.FC<CardDataStatsProps> = ({ title }) => {
   const [totalUMKM, setTotalUMKM] = useState<string>("Loading...");
 
   useEffect(() => {
-    // Mengambil total UMKM dari API
-    fetch("http://localhost:8000/api/jumlah-umkm")
-      .then((response) => response.json())
-      .then((data) => setTotalUMKM(data.jumlah_umkm))
-      .catch((error) => {
-        console.error("Error:", error);
-        setTotalUMKM("Error");
-      });
+    const fetchUMKM = async () => {
+      const total = await UMKMFacade.getTotalUMKM();
+      setTotalUMKM(total);
+    };
+
+    fetchUMKM();
   }, []);
 
   return (
@@ -46,4 +45,4 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({ title }) => {
   );
 };
 
-export default CardDataStats;
+export default CardDataUmkm;

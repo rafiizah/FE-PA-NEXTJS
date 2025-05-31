@@ -65,8 +65,17 @@ const DataJoinEvent: React.FC = () => {
     let filteredData = [...events];
 
     if (filterValue) {
-      filteredData = filteredData.filter((item) =>
-        item.event.nama_event.toLowerCase().includes(filterValue.toLowerCase())
+      filteredData = filteredData.filter(
+        (item) =>
+          item.event.nama_event
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          item.umkm.nama_usaha
+            .toLowerCase()
+            .includes(filterValue.toLowerCase()) ||
+          item.umkm.nama_pemilik
+            .toLowerCase()
+            .includes(filterValue.toLowerCase())
       );
     }
 

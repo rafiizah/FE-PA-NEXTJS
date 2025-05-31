@@ -1,5 +1,6 @@
 import React, { ReactNode, useState, useEffect, Children } from "react";
 import Image from "next/image";
+import { AsosiasiFacade } from "@/services/AsosiasiFacade";
 
 interface CardDataStatsProps {
   title: string;
@@ -11,14 +12,12 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({ title }) => {
   const [totalAsosiasi, setTotalAsosiasi] = useState<string>("Loading...");
 
   useEffect(() => {
-    // Mengambil total UMKM dari API
-    fetch("http://localhost:8000/api/jumlah-asosiasi")
-      .then((response) => response.json())
-      .then((data) => setTotalAsosiasi(data.jumlah_asosiasi))
-      .catch((error) => {
-        console.error("Error:", error);
-        setTotalAsosiasi("Error");
-      });
+    const fetchData = async () => {
+      const jumlah = await AsosiasiFacade.getJumlahAsosiasi();
+      setTotalAsosiasi(jumlah);
+    };
+
+    fetchData();
   }, []);
 
   return (

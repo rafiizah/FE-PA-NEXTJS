@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Login from "@/components/Auth/Login";
-import Cookies from "js-cookie"; // Ensure js-cookie is imported
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 import {
   Modal,
@@ -28,19 +29,35 @@ interface TokenData {
   user: User;
 }
 
-const Headeranding = () => {
+const HeaderLanding = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [token, setToken] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string>("");
   const [userId, setUserId] = useState<number | null>(null);
 
+  interface DecodedToken {
+    sub: string;
+    role: {
+      name: string;
+    };
+  }
   useEffect(() => {
     const savedToken = Cookies.get("token");
     if (savedToken) {
-      setToken(savedToken);
-      const userData: TokenData = JSON.parse(savedToken);
-      setUserRole(userData.user.role.name); // Extract user role name
-      setUserId(userData.user.id); // Extract user ID
+      try {
+        setToken(savedToken);
+        const decoded: any = jwtDecode(savedToken);
+        console.log("Decoded JWT:", decoded); // 🔍 cek isi token di console
+
+        if (decoded?.role?.name && decoded?.sub) {
+          setUserRole(decoded.role.name);
+          setUserId(Number(decoded.sub));
+        } else {
+          console.warn("Token tidak mengandung role.name atau sub");
+        }
+      } catch (error) {
+        console.error("Gagal decode token:", error);
+      }
     }
   }, []);
 
@@ -115,4 +132,4 @@ const Headeranding = () => {
   );
 };
 
-export default Headeranding;
+export default HeaderLanding;
