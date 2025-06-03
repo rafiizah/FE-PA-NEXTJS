@@ -22,7 +22,7 @@ const TabsCharts = () => {
             </div>
             <ChartThree />
           </Tab>
-          <Tab key="Asosiasi" title="Asosiasi">
+          {/* <Tab key="Asosiasi" title="Asosiasi">
             <div className="mb-2">
               <ChartAs />
             </div>
@@ -30,7 +30,7 @@ const TabsCharts = () => {
               <ChartYearAs />
             </div>
             <ChartCountAs />
-          </Tab>
+          </Tab> */}
         </Tabs>
       </div>
     </section>

@@ -34,7 +34,7 @@ const HeroLanding = () => {
           </p>
           <div className="flex justify-center">
             <ButtonUmkm />
-            <button
+            {/* <button
               onClick={onOpen}
               className="ml-4 inline-flex text-gray-700 bg-meta-10 hover:bg-meta-5 border-0 py-2 px-6 rounded text-lg"
             >
@@ -50,7 +50,7 @@ const HeroLanding = () => {
               <ModalContent>
                 <FormAsosiasi id={""} />
               </ModalContent>
-            </Modal>
+            </Modal> */}
           </div>
         </div>
         <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6">

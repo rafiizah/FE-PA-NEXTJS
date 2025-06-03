@@ -1,20 +1,35 @@
-// middleware.ts
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
+import { jwtDecode } from "jwt-decode";
 
-export function middleware(req: NextRequest) {
-  // Misalkan kita menggunakan cookie bernama 'auth-token' untuk memeriksa otentikasi pengguna
-  const token = req.cookies.get('token');
-
-  if (!token) {
-    // Jika tidak ada token, arahkan pengguna ke halaman login
-    return NextResponse.redirect(new URL('/', req.url));
-  }
-
-  // Jika ada token, lanjutkan ke halaman yang diminta
-  return NextResponse.next();
+interface DecodedToken {
+  sub: string;
 }
 
-// Tentukan kapan middleware ini harus berjalan
+export function middleware(req: NextRequest) {
+  const token = req.cookies.get("token")?.value;
+  const role = req.cookies.get("role")?.value || "";
+
+  if (!token) {
+    console.log("Middleware: No token found, redirecting to /");
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  try {
+    const decoded: DecodedToken = jwtDecode(token);
+    console.log("Middleware: Decoded token and role:", { role, path: req.nextUrl.pathname });
+
+    if (req.nextUrl.pathname.startsWith("/admin") && role !== "admin" && role !== "superadmin") {
+      console.log("Middleware: Unauthorized access to /admin, redirecting to /");
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+
+    return NextResponse.next();
+  } catch (error) {
+    console.error("Middleware: Invalid token:", error);
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+}
+
 export const config = {
-  matcher: ['/admin/:path*', '/dashboardUmkm/:path*', '/dashboardAsosiasi/:path*']
+  matcher: ["/admin/:path*", "/dashboardUmkm/:path*", "/dashboardAsosiasi/:path*"],
 };

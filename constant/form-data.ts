@@ -1,0 +1,88 @@
+// src/constants/formOptions.ts
+
+const REGENCY_OPTIONS = [
+  { value: "", label: "Pilih Kabupaten/Kota" },
+  { value: "KAB. PACITAN", label: "KAB. PACITAN" },
+  { value: "KAB. PONOROGO", label: "KAB. PONOROGO" },
+  { value: "KAB. TRENGGALEK", label: "KAB. TRENGGALEK" },
+  { value: "KAB. TULUNGAGUNG", label: "KAB. TULUNGAGUNG" },
+  { value: "KAB. BLITAR", label: "KAB. BLITAR" },
+  { value: "KAB. KEDIRI", label: "KAB. KEDIRI" },
+  { value: "KAB. MALANG", label: "KAB. MALANG" },
+  { value: "KAB. LUMAJANG", label: "KAB. LUMAJANG" },
+  { value: "KAB. JEMBER", label: "KAB. JEMBER" },
+  { value: "KAB. BANYUWANGI", label: "KAB. BANYUWANGI" },
+  { value: "KAB. BONDOWOSO", label: "KAB. BONDOWOSO" },
+  { value: "KAB. SITUBONDO", label: "KAB. SITUBONDO" },
+  { value: "KAB. PROBOLINGGO", label: "KAB. PROBOLINGGO" },
+  { value: "KAB. PASURUAN", label: "KAB. PASURUAN" },
+  { value: "KAB. SIDOARJO", label: "KAB. SIDOARJO" },
+  { value: "KAB. MOJOKERTO", label: "KAB. MOJOKERTO" },
+  { value: "KAB. JOMBANG", label: "KAB. JOMBANG" },
+  { value: "KAB. NGANJUK", label: "KAB. NGANJUK" },
+  { value: "KAB. MADIUN", label: "KAB. MADIUN" },
+  { value: "KAB. MAGETAN", label: "KAB. MAGETAN" },
+  { value: "KAB. NGAWI", label: "KAB. NGAWI" },
+  { value: "KAB. BOJONEGORO", label: "KAB. BOJONEGORO" },
+  { value: "KAB. TUBAN", label: "KAB. TUBAN" },
+  { value: "KAB. LAMONGAN", label: "KAB. LAMONGAN" },
+  { value: "KAB. GRESIK", label: "KAB. GRESIK" },
+  { value: "KAB. BANGKALAN", label: "KAB. BANGKALAN" },
+  { value: "KAB. SAMPANG", label: "KAB. SAMPANG" },
+  { value: "KAB. PAMEKASAN", label: "KAB. PAMEKASAN" },
+  { value: "KAB. SUMENEP", label: "KAB. SUMENEP" },
+  { value: "KOTA KEDIRI", label: "KOTA KEDIRI" },
+  { value: "KOTA BLITAR", label: "KOTA BLITAR" },
+  { value: "KOTA MALANG", label: "KOTA MALANG" },
+  { value: "KOTA PROBOLINGGO", label: "KOTA PROBOLINGGO" },
+  { value: "KOTA PASURUAN", label: "KOTA PASURUAN" },
+  { value: "KOTA MOJOKERTO", label: "KOTA MOJOKERTO" },
+  { value: "KOTA MADIUN", label: "KOTA MADIUN" },
+  { value: "KOTA SURABAYA", label: "KOTA SURABAYA" },
+  { value: "KOTA BATU", label: "KOTA BATU" },
+];
+
+const JENIS_BADAN_USAHA_OPTIONS = [
+  { value: "", label: "Pilih Jenis Badan" },
+  { value: "Perseorangan", label: "Perseorangan" },
+  { value: "PT", label: "PT" },
+  { value: "CV", label: "CV" },
+  { value: "UD", label: "UD" },
+];
+
+const KATEGORI_USAHA_OPTIONS = [
+  { value: "", label: "Pilih Kategori UMKM" },
+  { value: "Makanan & Minuman", label: "Makanan & Minuman" },
+  {
+    value: "Elektronik & Elektronik Rumah Tangga",
+    label: "Elektronik & Elektronik Rumah Tangga",
+  },
+  {
+    value: "Perlengkapan Usaha & kantor",
+    label: "Perlengkapan Usaha & kantor",
+  },
+  {
+    value: "Perlatan & Perlengkapan Listrik",
+    label: "Perlatan & Perlengkapan Listrik",
+  },
+  { value: "Mesin & Perkakas", label: "Mesin & Perkakas" },
+  { value: "Bahan & Sarana Produksi", label: "Bahan & Sarana Produksi" },
+  { value: "Otomotif & Aksesoris", label: "Otomotif & Aksesoris" },
+  { value: "Olahraga & Hiburan", label: "Olahraga & Hiburan" },
+  { value: "Gift & Craft", label: "Gift & Craft" },
+  { value: "Mainan & Hobi", label: "Mainan & Hobi" },
+  { value: "Jasa", label: "Jasa" },
+  { value: "Produk Segar", label: "Produk Segar" },
+  { value: "Pertanian & Budidaya", label: "Pertanian & Budidaya" },
+  { value: "Kesehatan & Kecantikan", label: "Kesehatan & Kecantikan" },
+  { value: "Pakaian", label: "Pakaian" },
+  { value: "Aksesoris Fashion", label: "Aksesoris Fashion" },
+  { value: "Tekstil & Produk Kulit", label: "Tekstil & Produk Kulit" },
+  { value: "Tas, Sepat, & Aksesorisnya", label: "Tas, Sepat, & Aksesorisnya" },
+  {
+    value: "Perlengkapan Rumah & Furniture",
+    label: "Perlengkapan Rumah & Furniture",
+  },
+];
+
+export { REGENCY_OPTIONS, JENIS_BADAN_USAHA_OPTIONS, KATEGORI_USAHA_OPTIONS };

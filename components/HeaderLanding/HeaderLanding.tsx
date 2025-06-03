@@ -4,7 +4,6 @@ import Image from "next/image";
 import Login from "@/components/Auth/Login";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
-
 import {
   Modal,
   ModalContent,
@@ -14,19 +13,11 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
+import { LoginFacade } from "@/services/LoginFacade";
+import Link from "next/link";
 
-interface UserRole {
-  name: string;
-}
-
-interface User {
-  id: number;
-  role: UserRole;
-}
-
-interface TokenData {
-  access_token: string;
-  user: User;
+interface DecodedToken {
+  sub: string;
 }
 
 const HeaderLanding = () => {
@@ -35,35 +26,32 @@ const HeaderLanding = () => {
   const [userRole, setUserRole] = useState<string>("");
   const [userId, setUserId] = useState<number | null>(null);
 
-  interface DecodedToken {
-    sub: string;
-    role: {
-      name: string;
-    };
-  }
+  const updateUserData = () => {
+    const { role, id } = LoginFacade.getUserDataFromToken();
+    setToken(Cookies.get("token") || null);
+    setUserRole(role);
+    setUserId(id);
+  };
+
   useEffect(() => {
-    const savedToken = Cookies.get("token");
-    if (savedToken) {
-      try {
-        setToken(savedToken);
-        const decoded: any = jwtDecode(savedToken);
-        console.log("Decoded JWT:", decoded); // 🔍 cek isi token di console
-
-        if (decoded?.role?.name && decoded?.sub) {
-          setUserRole(decoded.role.name);
-          setUserId(Number(decoded.sub));
-        } else {
-          console.warn("Token tidak mengandung role.name atau sub");
-        }
-      } catch (error) {
-        console.error("Gagal decode token:", error);
+    updateUserData();
+    const interval = setInterval(() => {
+      const newToken = Cookies.get("token");
+      if (newToken !== token) {
+        updateUserData();
       }
-    }
-  }, []);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [token]);
 
-  // Determine dashboard URL based on user role
+  const handleLoginSuccess = (newToken: string) => {
+    setToken(newToken);
+    updateUserData();
+    onClose();
+  };
+
   const getDashboardUrl = () => {
-    if (userRole === "admin") {
+    if (userRole === "admin" || userRole === "superadmin") {
       return `/admin`;
     } else if (userRole === "umkm") {
       return `/dashboardUmkm/${userId}`;
@@ -80,7 +68,10 @@ const HeaderLanding = () => {
       style={{ backgroundColor: "#ffffff" }}
     >
       <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-        <a className="flex title-font font-medium mr-6 text-gray-900 mb-4 md:mb-0">
+        <Link
+          href="/"
+          className="flex title-font font-medium mr-6 text-gray-900 mb-4 md:mb-0"
+        >
           <Image
             className="flex pl-15"
             src={"/images/logo/new-siumkm.png"}
@@ -88,27 +79,27 @@ const HeaderLanding = () => {
             width={250}
             height={32}
           />
-        </a>
+        </Link>
         <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
           <ul className="flex w-full justify-between items-center text-black-500">
-            <a href="/" className="mr-5 text-lg hover:text-meta-5">
+            <Link href="/" className="mr-5 text-lg hover:text-meta-5">
               Home
-            </a>
-            <a href="/Repository" className="mr-5 text-lg hover:text-meta-5">
+            </Link>
+            <Link href="/Repository" className="mr-5 text-lg hover:text-meta-5">
               Repository
-            </a>
-            <a href="/Events" className="mr-5 text-lg hover:text-meta-5">
+            </Link>
+            {/* <Link href="/Events" className="mr-5 text-lg hover:text-meta-5">
               Event
-            </a>
+            </Link> */}
           </ul>
         </nav>
         {token ? (
-          <a
-            href={getDashboardUrl()} // Set the href based on the user's role
+          <Link
+            href={getDashboardUrl()}
             className="font-medium tracking-wide py-2 px-5 sm:px-8 border border-meta-10 text-meta-10 bg-white outline-none rounded-l-full rounded-r-full capitalize hover:bg-meta-10 hover:text-white transition-all"
           >
             Dashboard
-          </a>
+          </Link>
         ) : (
           <button
             onClick={onOpen}
@@ -124,7 +115,7 @@ const HeaderLanding = () => {
           size={"4xl"}
         >
           <ModalContent>
-            <Login />
+            <Login onLoginSuccess={handleLoginSuccess} onClose={onClose} />
           </ModalContent>
         </Modal>
       </div>

@@ -1,5 +1,5 @@
 import Breadcrumb from "@/components/Charts/Breadcrumbs/Breadcrumb";
-import TableTwo from "@/components/Tables/TableTwo";
+// import TableTwo from "@/components/Tables/TableTwo";
 import TableOne from "@/components/Tables/TableOne";
 
 import { Metadata } from "next";
@@ -19,12 +19,12 @@ const TablesPage = () => {
         <div className="col-span-12 xl:col-span-12 mb-7">
           <TableOne />
         </div>
-        <div className="col-span-12 xl:col-span-12">
+        {/* <div className="col-span-12 xl:col-span-12">
           <TableTwo />
         </div>
         <div className="col-span-12 xl:col-span-12">
           <TableListEvent />
-        </div>
+        </div> */}
       </div>
     </>
   );

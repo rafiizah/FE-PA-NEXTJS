@@ -1,11 +1,12 @@
-import React, { ReactNode, useState, useEffect, Children } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { UMKMFacade } from "@/services/UMKMFacade";
 
 interface CardDataStatsProps {
   title: string;
-  umkm: string;
-  Children: ReactNode;
+  umkm?: string;
+  children?: React.ReactNode;
 }
 
 const CardDataUmkm: React.FC<CardDataStatsProps> = ({ title }) => {
@@ -13,7 +14,7 @@ const CardDataUmkm: React.FC<CardDataStatsProps> = ({ title }) => {
 
   useEffect(() => {
     const fetchUMKM = async () => {
-      const total = await UMKMFacade.getTotalUMKM();
+      const total = await UMKMFacade.getInstance().getTotalUMKM();
       setTotalUMKM(total);
     };
 
@@ -24,9 +25,7 @@ const CardDataUmkm: React.FC<CardDataStatsProps> = ({ title }) => {
     <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
         <Image
-          src={
-            "/images/store-business-marketplace-shop-sale-buy-marketing-2-svgrepo-com.svg"
-          }
+          src="/images/store-business-marketplace-shop-sale-buy-marketing-2-svgrepo-com.svg"
           alt="Logo"
           width={29}
           height={29}

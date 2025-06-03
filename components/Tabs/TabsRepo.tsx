@@ -17,9 +17,9 @@ const TableFive = () => {
               <Tab key="UMKM" title="UMKM">
                 <TableListUmkm />
               </Tab>
-              <Tab key="Asosiasi" title="Asosiasi">
+              {/* <Tab key="Asosiasi" title="Asosiasi">
                 <TableListAsosiasi />
-              </Tab>
+              </Tab> */}
             </Tabs>
           </div>
         </div>

@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
-import axios from "axios";
 import Image from "next/image";
 import {
   Table,
@@ -15,43 +14,16 @@ import {
 } from "@nextui-org/react";
 import { SearchIcon } from "../Icon/SearchIcon";
 import { DeleteIcon } from "../Icon/DeleteIcon";
-
-interface Umkm {
-  id: string;
-  nama_pemilik: string;
-  nomor_pemilik: string;
-  alamat_pemilik: string;
-  nama_usaha: string;
-  alamat_usaha: string;
-  domisili_usaha: string;
-  kodePos_usaha: string;
-  email_usaha: string;
-  tahunBerdiri_usaha: string;
-  jenisbadan_usaha: string;
-  kategori_usaha: string;
-  image: string;
-  deskripsi_usaha: string;
-  legalitas_usaha: string;
-}
-
-async function deleteMember(id: string) {
-  try {
-    const res = await fetch(`http://localhost:8000/api/pemilik/${id}`, {
-      method: "DELETE",
-    });
-    if (!res.ok) {
-      throw new Error("Network response was not ok");
-    }
-  } catch (error) {
-    console.error("Error deleting member:", error);
-  }
-}
+import { Umkm } from "@/types/umkm";
+import { API_URLS } from "@/app/api/api-url";
+import { UMKMFacade } from "@/services/UMKMFacade"; // Correct import
 
 export default function TableOne() {
   const [filterValue, setFilterValue] = useState("");
   const [data, setData] = useState<Umkm[]>([]);
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
+  const umkmFacade = UMKMFacade.getInstance();
 
   useEffect(() => {
     fetchData();
@@ -59,10 +31,14 @@ export default function TableOne() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/pemilik");
-      const umkmData: Umkm[] = response.data.umkm;
-
-      setData(umkmData);
+      const umkmData = await umkmFacade.fetchUmkmData();
+      // Ensure umkmData is an array before setting state
+      if (Array.isArray(umkmData)) {
+        setData(umkmData);
+      } else {
+        console.error("Fetched data is not an array:", umkmData);
+        setData([]);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
       setData([]);
@@ -71,10 +47,8 @@ export default function TableOne() {
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteMember(id);
-      // Menghapus item yang sesuai dengan id dari state data
+      await umkmFacade.deleteUmkm(id);
       const newData = data.filter((item) => item.id !== id);
-      // Memperbarui state data dengan data yang sudah dihapus
       setData(newData);
     } catch (error) {
       console.error("Error deleting member:", error);
@@ -90,8 +64,8 @@ export default function TableOne() {
   };
 
   const filteredItems = useMemo(() => {
-    let filteredData = [...data];
-
+    // Ensure data is an array before spreading
+    let filteredData = Array.isArray(data) ? [...data] : [];
     if (filterValue) {
       filteredData = filteredData.filter(
         (item) =>
@@ -99,14 +73,12 @@ export default function TableOne() {
           item.nama_usaha.toLowerCase().includes(filterValue.toLowerCase())
       );
     }
-
     return filteredData;
   }, [data, filterValue]);
 
   const paginatedData = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-
     return filteredItems.slice(start, end);
   }, [filteredItems, page]);
 
@@ -145,7 +117,7 @@ export default function TableOne() {
         }}
       >
         <TableHeader>
-          <TableColumn align={"center"} key="nama_pemilik">
+          <TableColumn align="center" key="nama_pemilik">
             Nama Pemilik
           </TableColumn>
           <TableColumn key="nomor_pemilik">Nomor Pemilik</TableColumn>
@@ -182,11 +154,10 @@ export default function TableOne() {
               <TableCell>{item.deskripsi_usaha}</TableCell>
               <TableCell>{item.legalitas_usaha}</TableCell>
               <TableCell>
-                {" "}
                 <Image
-                  src={`http://localhost:8000/${item.image}`}
+                  src={`http://localhost:8000${item.image.startsWith('/') ? '' : '/'}${item.image}`}
                   className="rounded-3"
-                  alt={`Gambar ${item.image}`}
+                  alt={`Gambar ${item.id}`}
                   width={100}
                   height={100}
                 />

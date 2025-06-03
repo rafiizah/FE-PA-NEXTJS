@@ -14,7 +14,7 @@ const CardDataUmkmlanding: React.FC<CardDataStatsProps> = ({ title }) => {
 
   useEffect(() => {
     const fetchUMKM = async () => {
-      const total = await UMKMFacade.getTotalUMKM();
+      const total = await UMKMFacade.getInstance().getTotalUMKM();
       setTotalUMKM(total);
     };
 

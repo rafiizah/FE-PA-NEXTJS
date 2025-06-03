@@ -1,10 +1,10 @@
+// app/amin/page.tsx
 import ECommerce from "@/components/Dashboard/E-commerce";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "SI UMKM |  Dashboard UMKM",
-  description: "This is Home Blog page",
-  // other metadata
+  description: "This is Admin Dashboard page",
 };
 
 export default function Home() {

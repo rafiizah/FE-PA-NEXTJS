@@ -1,3 +1,4 @@
+// components/Dashboard/E-commerce.tsx
 "use client";
 import React from "react";
 import CardDataStats from "../CardDataUmkm";
@@ -21,29 +22,28 @@ const ECommerce: React.FC<{
   return (
     <>
       <Breadcrumb pageName="Dashboard" />
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-2 2xl:gap-7.5">
         <CardDataStats
           title="Total UMKM"
           umkm={umkm ? umkm : "Data tidak tersedia"}
-          Children={undefined}
         />
 
-        <CardDataAsosiasi
+        {/* <CardDataAsosiasi
           title="Total Asosiasi"
           asosiasi={asosiasi ? asosiasi : "Data tidak tersedia"}
           Children={undefined}
-        />
+        /> */}
 
         <CardDataUser
           title="Total User"
           users={users ? users : "Data tidak tersedia"}
           Children={undefined}
         />
-        <CardDataEvent
+        {/* <CardDataEvent
           title="Total Event"
           event={event ? event : "Data tidak tersedia"}
           Children={undefined}
-        />
+        /> */}
       </div>
       <div className="mt-4 w-full flex-col">
         <MapOne />

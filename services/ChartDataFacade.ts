@@ -1,4 +1,5 @@
-// services/ChartDataFacade.ts
+import { API_URLS } from "@/app/api/api-url";
+import axios from "axios";
 
 export interface ChartData {
   labels: string[];
@@ -7,14 +8,13 @@ export interface ChartData {
 
 export const ChartDataFacade = {
   async getUMKMChartData(): Promise<ChartData> {
-    const response = await fetch("http://localhost:8000/api/chart-data");
-    if (!response.ok) {
+    try {
+      const response = await axios.get(API_URLS.CHART_DATA);
+      const { labels, values } = response.data;
+      return { labels, values };
+    } catch (error) {
+      console.error("Error fetching chart data:", error);
       throw new Error("Failed to fetch chart data");
     }
-
-    const data = await response.json();
-    const { labels, values } = data;
-
-    return { labels, values };
   },
 };

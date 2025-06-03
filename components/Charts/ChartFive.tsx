@@ -34,11 +34,11 @@ const ChartFive: React.FC<{
             Children={undefined}
           />
 
-          <CardDataAsosiasilanding
+          {/* <CardDataAsosiasilanding
             title="Total Asosiasi"
             asosiasi={asosiasi ? asosiasi : "Data tidak tersedia"}
             Children={undefined}
-          />
+          /> */}
         </div>
       </div>
     </section>

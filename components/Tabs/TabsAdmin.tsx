@@ -13,13 +13,13 @@ const TableFive = () => {
           <Tab key="UMKM" title="UMKM">
             <TableOne />
           </Tab>
-          <Tab key="Asosiasi" title="Asosiasi">
+          {/* <Tab key="Asosiasi" title="Asosiasi">
             <TableTwo />
           </Tab>
 
           <Tab key="Event" title="Event">
             <TableListEvent />
-          </Tab>
+          </Tab> */}
         </Tabs>
       </div>
     </section>

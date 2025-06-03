@@ -9,8 +9,8 @@ import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 
 interface LoginProps {
-  onLoginSuccess?: (newToken: string) => void; // Optional prop
-  onClose?: () => void; // Optional prop
+  onLoginSuccess?: (newToken: string) => void;
+  onClose?: () => void;
 }
 
 const Login: React.FC<LoginProps> = ({ onLoginSuccess, onClose }) => {
@@ -26,6 +26,12 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess, onClose }) => {
     try {
       const { role, id } = await LoginFacade.login(email, password);
       const dashboardPath = LoginFacade.getDashboardPath(role, id);
+      const token = Cookies.get("token");
+
+      if (!token) {
+        throw new Error("Token not found after login");
+      }
+
       toast.success("Login successful! Redirecting...", {
         position: "top-right",
         autoClose: 2000,
@@ -35,42 +41,41 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess, onClose }) => {
         draggable: true,
       });
 
-      // Assume the token is returned or stored in Cookies
-      const token = Cookies.get("token"); // Adjust based on your API response
-      if (token && onLoginSuccess) {
-        onLoginSuccess(token); // Call the callback to update parent state
+      if (onLoginSuccess) {
+        onLoginSuccess(token);
       }
 
       if (onClose) {
-        onClose(); // Close the modal
+        onClose();
       }
 
-      setTimeout(() => {
-        router.push(dashboardPath);
-      }, 2000);
+      router.replace(dashboardPath); // Immediate navigation
     } catch (err: any) {
-      toast.error(
-        err.message || "Login gagal. Cek kembali email dan password.",
-        {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        }
-      );
+      console.error("Login error:", err);
+      toast.error(err.message || "Login gagal. Cek kembali email dan password.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (LoginFacade.isLoggedIn()) {
-      if (onClose) onClose(); // Close modal if already logged in
-      router.push("/");
-    }
-  }, [router, onClose]);
+  // Disable useEffect to prevent interference
+  // useEffect(() => {
+  //   if (LoginFacade.isLoggedIn() && !isLoading) {
+  //     const { role, id } = LoginFacade.getUserDataFromToken();
+  //     const dashboardPath = LoginFacade.getDashboardPath(role, id);
+  //     console.log("useEffect redirect:", { role, id, dashboardPath });
+  //     if (dashboardPath !== "/") {
+  //       router.replace(dashboardPath);
+  //     }
+  //   }
+  // }, [router]);
 
   return (
     <>
